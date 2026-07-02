@@ -1,0 +1,164 @@
+nav {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background-color: antiquewhite;
+  width: 0px;
+  z-index: 5;
+}
+
+.menu-btn {
+  position: fixed;
+  padding: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 0px;
+  transition: all 0.7s;
+  z-index: 1;
+  justify-content: space-between;
+
+  pointer-events: none;
+}
+
+nav .btn {
+  opacity: 0;
+  pointer-events: none;
+  padding: 8px 16px;
+  fill: #f6d4b1;
+}
+
+.mode-btn {
+  margin-left: auto;
+  opacity: 1 !important;
+  pointer-events: all !important;
+  font-family: "public-pixel", monospace;
+  font-size: 0.7em;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.menu-btn > .btn:first-child {
+  padding: 8px 24px;
+  margin-right: 16px;
+}
+
+nav svg {
+  transition: all 0.2s;
+}
+
+html[data-scroll="true"] nav .btn {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.active .btn {
+  box-shadow: 6px 6px 0px rgba(246, 212, 177, 0.7);
+  background-color: #f6d4b1;
+  color: #525252;
+  fill: #525252;
+  border-color: #525252;
+  opacity: 1 !important;
+  pointer-events: all !important;
+}
+
+.active .btn:hover {
+  box-shadow: 8px 8px 6px rgba(246, 212, 177, 0.5);
+}
+
+.active .btn:active {
+  box-shadow: 4px 4px 0px rgba(246, 212, 177, 0.7);
+}
+
+.menu-body {
+  background-color: #525252;
+  color: #f6d4b1;
+  font-size: 1em;
+  font-family: "public-pixel", monospace;
+  text-decoration: none !important;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: auto;
+  width: max(200px, 10vw);
+  transform: translateX(-110%);
+  border-right: solid 2px #f6d4b1;
+  box-shadow: 8px 0px 0px rgba(82, 82, 82, 0.25);
+  z-index: 0;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+  display: inline-flex;
+  gap: 16px;
+  flex-direction: column;
+  padding-top: 110px;
+  padding-left: 20px;
+  overflow: hidden;
+  box-sizing: border-box;
+  opacity: 0;
+}
+
+.menu-body a {
+  text-decoration: none !important;
+  opacity: 0.85;
+  transition: transform 0.25s ease, opacity 0.25s ease,
+    text-shadow 0.25s ease;
+}
+
+.menu-body a:hover {
+  transform: translateX(8px);
+  box-shadow: none;
+  opacity: 1;
+  text-shadow: 0 0 10px rgba(246, 212, 177, 0.6);
+}
+
+.active .menu-body {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+#tip-scroll {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "chill", sans-serif;
+  font-size: 14px;
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.75);
+  background-color: #525252;
+  color: #f6d4b1;
+  transition: all 0.3s;
+  padding: 4px 24px;
+  border: #f6d4b1 solid 1px;
+  pointer-events: none;
+  display: none;
+  opacity: 1;
+}
+
+html[data-scroll="true"] #tip-scroll {
+  opacity: 0;
+}
+
+.active #tip-scroll {
+  opacity: 0 !important;
+}
+
+@media (min-width: 540px) {
+  .menu-btn {
+    justify-content: left;
+  }
+
+  .active .menu-btn {
+    translate: 28px;
+  }
+
+  .menu-body {
+    padding-left: 24px;
+  }
+}
+
+@media (orientation: portrait) {
+  #tip-scroll {
+    display: block;
+  }
+}
