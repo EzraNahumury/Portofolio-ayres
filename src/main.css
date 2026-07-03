@@ -39,6 +39,96 @@ body {
   z-index: 1;
 }
 
+/* --- hero card swap (3D stacked project cards) --- */
+.card-swap {
+  position: fixed;
+  right: max(3vw, 22px);
+  bottom: max(5vh, 26px);
+  width: 360px;
+  height: 244px;
+  z-index: 3;
+  perspective: 1000px;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+.cs-stack {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.cs-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: solid 2px var(--color);
+  border-radius: 12px;
+  background: #140f08;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  box-shadow: 8px 10px 0 rgba(82, 82, 82, 0.28);
+  pointer-events: none;
+  opacity: 1;
+}
+.cs-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #0b0805;
+  border-bottom: solid 1px rgba(249, 144, 33, 0.35);
+}
+.cs-bdot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f99021;
+  opacity: 0.5;
+}
+.cs-bdot:nth-child(2) {
+  opacity: 0.38;
+}
+.cs-bdot:nth-child(3) {
+  opacity: 0.26;
+}
+.cs-bname {
+  margin-left: auto;
+  font-family: "public-pixel", monospace;
+  font-size: 0.52em;
+  letter-spacing: 0.04em;
+  color: #f99021;
+  opacity: 0.9;
+  text-shadow: 0 0 6px rgba(249, 144, 33, 0.4);
+  white-space: nowrap;
+}
+.cs-shot {
+  width: 100%;
+  height: calc(100% - 33px);
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+@media (max-width: 768px) {
+  .card-swap {
+    width: 260px;
+    height: 178px;
+    right: 14px;
+    bottom: 16px;
+  }
+}
+@media (max-width: 480px) {
+  .card-swap {
+    width: 200px;
+    height: 140px;
+  }
+  .cs-bname {
+    font-size: 0.44em;
+  }
+}
+
 #hero-backup {
   display: flex;
   flex-direction: column;
@@ -250,11 +340,106 @@ section:last-of-type {
   margin-bottom: 0;
 }
 
+/* --- tech stack marquee (logo loop) --- */
+.tech-strip {
+  width: 100%;
+  padding: 56px 0 20px;
+  z-index: 2;
+  position: relative;
+}
+.tech-strip-label {
+  text-align: center;
+  font-family: "public-pixel", monospace;
+  font-size: 0.66em;
+  letter-spacing: 0.12em;
+  color: var(--color);
+  opacity: 0.55;
+  margin-bottom: 44px;
+}
+.ll-ico svg {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+.ll-item {
+  padding: 4px 0;
+}
+.ll {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+.ll-track {
+  display: flex;
+  width: max-content;
+  animation: ll-scroll 46s linear infinite;
+}
+.ll:hover .ll-track {
+  animation-play-state: paused;
+}
+@keyframes ll-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ll-seq {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ll-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 0 30px;
+  flex: none;
+}
+.ll-ico {
+  color: var(--color);
+  line-height: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0.85;
+}
+.ll-ico svg {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+.ll-item:hover .ll-ico {
+  transform: scale(1.2);
+  opacity: 1;
+}
+.ll-name {
+  font-family: "public-pixel", monospace;
+  font-size: 0.56em;
+  letter-spacing: 0.03em;
+  color: var(--color);
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
 .site-footer {
   position: relative;
   overflow: hidden;
   width: 100%;
-  margin-top: 80px;
+  margin-top: 40px;
   color: var(--color);
   border-top: dashed 2px var(--color);
   z-index: 2;
@@ -464,7 +649,6 @@ a:active {
   opacity: 0;
   transform: translateY(28px);
   transition: opacity 0.7s ease, transform 0.7s ease;
-  will-change: opacity, transform;
 }
 .reveal.is-visible {
   opacity: 1;
@@ -711,6 +895,189 @@ a:active {
 }
 .reveal-line.is-visible {
   transform: scaleX(1);
+}
+
+/* --- projects: grid of cards --- */
+.projects-wrap {
+  width: clamp(0px, 95vw, 1100px);
+  margin: auto;
+}
+.projects-intro {
+  width: clamp(0px, 90vw, 640px);
+  margin: 8px auto 40px;
+  padding: 0 16px;
+  text-align: center;
+  line-height: 1.6;
+}
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  text-align: left;
+}
+@media (max-width: 900px) {
+  .projects-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+}
+.project-card {
+  display: flex;
+  flex-direction: column;
+  background: #f6d4b1;
+  border: dashed 2px var(--color);
+  box-shadow: 1px 1px 0px #f6d4b1, 6px 6px 0px rgba(82, 82, 82, 0.25);
+  overflow: hidden;
+  transition: opacity 0.6s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.project-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 1px 1px 0px #f6d4b1, 12px 14px 0px rgba(82, 82, 82, 0.35);
+}
+/* thumbnail = actual project screenshot */
+.pc-thumb {
+  position: relative;
+  height: 160px;
+  background: #140f08;
+  border-bottom: solid 2px var(--color);
+  overflow: hidden;
+}
+.pc-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.project-card:hover .pc-img {
+  transform: scale(1.05);
+}
+/* soft overlay so downscaled screenshots read clean, not pixelated */
+.pc-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+      to bottom,
+      rgba(20, 15, 8, 0.12),
+      rgba(20, 15, 8, 0.42)
+    ),
+    radial-gradient(
+      circle at 50% 38%,
+      transparent 55%,
+      rgba(20, 15, 8, 0.3) 100%
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0.07) 3px,
+      rgba(0, 0, 0, 0.07) 4px
+    );
+  transition: opacity 0.35s ease;
+}
+.project-card:hover .pc-thumb::after {
+  opacity: 0.45;
+}
+.pc-thumb-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  font-family: "public-pixel", monospace;
+  font-size: 0.6em;
+  letter-spacing: 0.06em;
+  color: #140f08;
+  background: #f99021;
+  padding: 5px 9px;
+  box-shadow: 0 0 10px rgba(249, 144, 33, 0.5),
+    2px 2px 0 rgba(20, 15, 8, 0.5);
+}
+.pc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 22px 22px;
+  flex: 1;
+}
+.pc-title {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  font-family: "public-pixel", monospace;
+  font-size: 0.82em;
+  line-height: 1.4;
+  color: var(--color);
+}
+.pc-desc {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  font-size: 0.88em;
+  line-height: 1.55;
+  text-align: left;
+  opacity: 0.9;
+}
+.pc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  margin-top: auto;
+}
+.pc-tags li {
+  font-family: "public-pixel", monospace;
+  font-size: 0.55em;
+  letter-spacing: 0.04em;
+  padding: 5px 9px;
+  border: dashed 1px var(--color);
+  color: var(--color);
+  transition: background-color 0.25s, color 0.25s;
+}
+.project-card:hover .pc-tags li {
+  background: var(--color);
+  color: #f6d4b1;
+}
+
+/* show more / less */
+.projects-grid:not(.show-all) .project-card.is-extra {
+  display: none;
+}
+.projects-more {
+  text-align: center;
+  margin-top: 34px;
+}
+.show-more-btn {
+  font-family: "public-pixel", monospace;
+  font-size: 0.72em;
+  letter-spacing: 0.05em;
+  color: #f6d4b1;
+  background: var(--color);
+  border: solid 2px var(--color);
+  padding: 15px 28px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px rgba(82, 82, 82, 0.3);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.show-more-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 8px 0px rgba(82, 82, 82, 0.4);
+}
+.show-more-btn:active {
+  transform: translateY(0);
+  box-shadow: 2px 2px 0px rgba(82, 82, 82, 0.4);
 }
 
 /* --- projects: interactive hover --- */
@@ -1164,7 +1531,8 @@ a:active {
   .crt-card::after,
   .cs-cursor,
   .stat::before,
-  .cc-status.is-open .cc-status-dot {
+  .cc-status.is-open .cc-status-dot,
+  .ll-track {
     animation: none;
   }
   .crt-card.is-visible .cs-bar-fill {
