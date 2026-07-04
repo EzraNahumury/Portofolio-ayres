@@ -41,10 +41,15 @@
 
     <canvas class="webgl"></canvas>
 
-    <div id="normal-mode-overlay">
+    <!-- Normal Mode is the site's default view — the overlay starts already
+         visible with the iframe loading immediately, so visitors land here
+         first and can switch to the retro 3D terminal from its own
+         "Retro Mode" button. -->
+    <div id="normal-mode-overlay" class="is-visible">
       <iframe
         id="normal-mode-frame"
         title="AYRES — Normal Mode"
+        src="/normal-mode/index.html"
       ></iframe>
     </div>
 
@@ -717,12 +722,12 @@
         }
       }
 
-      // "Normal Mode" swaps out of the retro 3D terminal for a conventional
-      // landing page. It's shown as an in-page iframe overlay (lazy-loaded
-      // on first use) instead of a navigation, so switching modes never
-      // reloads the page or opens a new tab — and "Retro Mode" inside that
-      // page can hand control back the same way (see the message listener
-      // below).
+      // Normal Mode is the default view (the overlay already starts visible
+      // in the HTML above) with the retro 3D terminal reachable behind it.
+      // Both directions toggle the same in-page iframe overlay instead of
+      // navigating, so switching modes never reloads the page or opens a
+      // new tab — "Retro Mode" inside that page hands control back via the
+      // message listener below.
       const modeBtn = document.getElementById("mode-btn");
       const normalModeOverlay = document.getElementById("normal-mode-overlay");
       const normalModeFrame = document.getElementById("normal-mode-frame");
