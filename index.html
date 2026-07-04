@@ -617,13 +617,6 @@
     </main>
 
     <input type="text" id="textarea" readonly />
-    <div id="loading">
-      <h2>Booting...</h2>
-      <div id="loading-bar">
-        <div id="loading-bar-progress"></div>
-      </div>
-      <div id="loading-items">Starting...</div>
-    </div>
       <div class="tech-strip reveal">
         <div class="tech-strip-label">// BUILT WITH</div>
         <div class="ll" role="region" aria-label="Tech stack">
@@ -715,6 +708,15 @@
         } else {
           nav.classList.add("active");
         }
+      }
+
+      // "Normal Mode" swaps out of the retro 3D terminal into a
+      // conventional landing page, opened in a new tab.
+      const modeBtn = document.getElementById("mode-btn");
+      if (modeBtn) {
+        modeBtn.addEventListener("click", function () {
+          window.open("/normal-mode/index.html", "_blank", "noopener");
+        });
       }
     </script>
     <script>

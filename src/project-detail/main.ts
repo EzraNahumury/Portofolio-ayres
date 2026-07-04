@@ -5,6 +5,111 @@ import { marked } from "marked";
 import flows from "./flows.json";
 import { initI18n, t, getLang } from "../i18n";
 
+// Arriving from the dark "Normal Mode" landing page (?theme=dark) should not
+// dump the visitor into the retro peach page — keep it dark all the way
+// through. Applied to <html> as early as possible so detail.css can react.
+const isDarkMode = new URLSearchParams(location.search).get("theme") === "dark";
+
+// "Back to projects" must return wherever the visitor actually came from:
+// the retro homepage's #projects, or Normal Mode's own project showcase
+// (#capabilities) — never hardcoded to the retro path regardless of theme.
+const backHref = isDarkMode
+  ? "/normal-mode/index.html#capabilities"
+  : "/#projects";
+
+if (isDarkMode) {
+  document.documentElement.setAttribute("data-theme", "dark");
+
+  // Normal Mode sets all its card/heading/body copy in Space Grotesk (its
+  // --font-tech). Load it only on this path so the retro/light page never
+  // pays for a font it doesn't use.
+  const preconnect1 = document.createElement("link");
+  preconnect1.rel = "preconnect";
+  preconnect1.href = "https://fonts.googleapis.com";
+  const preconnect2 = document.createElement("link");
+  preconnect2.rel = "preconnect";
+  preconnect2.href = "https://fonts.gstatic.com";
+  preconnect2.crossOrigin = "anonymous";
+  const fontLink = document.createElement("link");
+  fontLink.rel = "stylesheet";
+  fontLink.href =
+    "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap";
+  document.head.append(preconnect1, preconnect2, fontLink);
+
+  // The top-nav "← Projects" link is static markup in project.html (already
+  // in the DOM before this script runs) — repoint it here rather than
+  // hardcoding two conflicting hrefs in the HTML.
+  const navBack = document.querySelector<HTMLAnchorElement>(".dn-back");
+  if (navBack) navBack.href = backHref;
+}
+
+const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Hero content (tag/title/blurb/kicker) is always above the fold, so it
+// reveals immediately on render rather than waiting for a scroll trigger.
+// The double rAF ensures the browser paints the opacity:0 starting state
+// before the class flip, so the transition actually animates.
+function revealHeroChildren(container: Element) {
+  const els = Array.from(container.children) as HTMLElement[];
+  els.forEach((el, i) => {
+    el.classList.add("reveal");
+    el.style.transitionDelay = `${i * 0.08}s`;
+  });
+  if (prefersReducedMotion) {
+    els.forEach((el) => el.classList.add("is-visible"));
+    return;
+  }
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      els.forEach((el) => el.classList.add("is-visible"));
+    });
+  });
+}
+
+// Below-the-fold sections (flow blocks, the closing "back to overview" link)
+// cascade in as they're scrolled into view, each unobserved once revealed so
+// the effect only ever plays once per visit.
+//
+// threshold must stay 0 (fire as soon as a single pixel is visible), not a
+// proportion: flow blocks can contain several stacked diagrams several
+// hundred to 1000+px tall each, so a block can easily run to 3000-6000px
+// tall. A proportional threshold like 0.12 would require ~600px+ of it
+// visible at once just to cross 12% — a window most normal scrolling never
+// hits, so the block (and its diagram) would stay stuck at opacity:0
+// forever, i.e. silently "disappear".
+function revealOnScroll(elements: HTMLElement[]) {
+  if (elements.length === 0) return;
+  if (prefersReducedMotion) {
+    elements.forEach((el) => el.classList.add("reveal", "is-visible"));
+    return;
+  }
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("is-visible");
+        io.unobserve(entry.target);
+      }
+    },
+    { threshold: 0, rootMargin: "0px 0px -40px 0px" },
+  );
+  elements.forEach((el, i) => {
+    el.classList.add("reveal");
+    el.style.transitionDelay = `${Math.min(i, 3) * 0.06}s`;
+    io.observe(el);
+  });
+
+  // Safety net: content must never stay permanently invisible because of an
+  // observer edge case (unusual scroll pattern, viewport quirk, etc.) — force
+  // anything still unrevealed into view after a few seconds.
+  setTimeout(() => {
+    elements.forEach((el) => el.classList.add("is-visible"));
+    io.disconnect();
+  }, 4000);
+}
+
 type Section = { title: string; body: string };
 type Project = {
   title: string;
@@ -74,10 +179,11 @@ function renderNotFound(slug: string) {
       <p class="dh-blurb"><b>"${escapeHtml(slug)}"</b> — <span data-i18n="detail.nfMsg">${t(
         "detail.nfMsg",
       )}</span></p>
-      <a class="dh-back-btn" href="/#projects" data-i18n="detail.backBtn">${t(
+      <a class="dh-back-btn" href="${backHref}" data-i18n="detail.backBtn">${t(
         "detail.backBtn",
       )}</a>
     </div>`;
+  revealHeroChildren(root.querySelector(".detail-hero")!);
 }
 
 /* ---------------- fullscreen diagram overlay with zoom ---------------- */
@@ -110,6 +216,14 @@ function openOverlay(svgHtml: string, title: string) {
   document.body.appendChild(overlay);
   document.body.classList.add("fd-lock");
 
+  if (prefersReducedMotion) {
+    overlay.classList.add("is-open");
+  } else {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => overlay.classList.add("is-open"));
+    });
+  }
+
   const svgEl = overlay.querySelector<SVGSVGElement>(".fdo-canvas svg");
   const zoomLabel = overlay.querySelector(".fdo-zoom")!;
   const base = svgEl ? svgNaturalWidth(svgEl) : 800;
@@ -125,10 +239,23 @@ function openOverlay(svgHtml: string, title: string) {
   };
   apply();
 
+  let closed = false;
   const close = () => {
+    if (closed) return;
+    closed = true;
     document.removeEventListener("keydown", onKey);
-    document.body.classList.remove("fd-lock");
-    overlay.remove();
+    if (prefersReducedMotion) {
+      document.body.classList.remove("fd-lock");
+      overlay.remove();
+      return;
+    }
+    overlay.classList.remove("is-open");
+    const finish = () => {
+      document.body.classList.remove("fd-lock");
+      overlay.remove();
+    };
+    overlay.addEventListener("transitionend", finish, { once: true });
+    setTimeout(finish, 300); // safety net if transitionend never fires
   };
   const onKey = (e: KeyboardEvent) => {
     if (e.key === "Escape") close();
@@ -166,7 +293,7 @@ async function render() {
     .map((s, i) => {
       const num = String(i + 1).padStart(2, "0");
       return `
-      <section class="flow-block">
+      <section class="flow-block" data-num="${num}">
         <h2 class="flow-title"><span class="ft-num">${num}</span>${escapeHtml(
           s.title,
         )}</h2>
@@ -177,7 +304,7 @@ async function render() {
 
   // "00" — what this project is, before diving into the flows
   const introHtml = `
-      <section class="flow-block flow-intro">
+      <section class="flow-block flow-intro" data-num="00">
         <h2 class="flow-title"><span class="ft-num">00</span>${escapeHtml(
           p.title,
         )}</h2>
@@ -200,57 +327,102 @@ async function render() {
     </div>
     <div class="flow-list">${introHtml}${sectionsHtml}</div>
     <div class="detail-more">
-      <a class="dh-back-btn" href="/#projects" data-i18n="detail.backBtn">${t(
+      <a class="dh-back-btn" href="${backHref}" data-i18n="detail.backBtn">${t(
         "detail.backBtn",
       )}</a>
     </div>`;
+  revealHeroChildren(root.querySelector(".detail-hero")!);
+  revealOnScroll(
+    Array.from(root.querySelectorAll<HTMLElement>(".flow-block, .detail-more")),
+  );
 
   // Theme tuned to the site palette: warm cream nodes, charcoal actors,
-  // orange accent frames.
+  // orange accent frames. A parallel dark set (same accent colors, dark
+  // canvas) keeps diagrams legible when arriving from Normal Mode.
   //
   // htmlLabels:false — labels are plain SVG <text>, measured with getBBox,
   // immune to page CSS (fixes the inflated-diamond / mis-placed label bug).
   // useMaxWidth:false — diagrams render at natural size and scroll inside
   // their frame instead of being shrunk to unreadable sizes.
+  const lightThemeVariables = {
+    fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+    fontSize: "15px",
+    // generic nodes (flowchart / state / misc)
+    primaryColor: "#fff3e0",
+    primaryBorderColor: "#b25b12",
+    primaryTextColor: "#3b2a18",
+    secondaryColor: "#fbe7cf",
+    secondaryBorderColor: "#8a5a2b",
+    tertiaryColor: "#fdeeda",
+    tertiaryBorderColor: "#8a5a2b",
+    lineColor: "#7a4a1d",
+    textColor: "#3b2a18",
+    // flowchart subgraphs
+    clusterBkg: "#fbe7cf",
+    clusterBorder: "#b25b12",
+    edgeLabelBackground: "#ffe9b0",
+    // sequence diagrams
+    actorBkg: "#525252",
+    actorBorder: "#140f08",
+    actorTextColor: "#f6d4b1",
+    actorLineColor: "#a98963",
+    signalColor: "#5a3d1e",
+    signalTextColor: "#3b2a18",
+    labelBoxBkgColor: "#f99021",
+    labelBoxBorderColor: "#b25b12",
+    labelTextColor: "#140f08",
+    loopTextColor: "#3b2a18",
+    noteBkgColor: "#ffe9b0",
+    noteBorderColor: "#c98a2e",
+    noteTextColor: "#3b2a18",
+    activationBkgColor: "#f6d4b1",
+    activationBorderColor: "#b25b12",
+  };
+
+  // Matches Normal Mode's own palette (near-black surfaces, violet→blue
+  // brand accent) rather than the retro site's amber — so a diagram doesn't
+  // read as a color scheme swap away from the page it's embedded in.
+  const darkThemeVariables = {
+    fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+    fontSize: "15px",
+    // generic nodes (flowchart / state / misc)
+    primaryColor: "#18181c",
+    primaryBorderColor: "#9181f5",
+    primaryTextColor: "#f2f2f5",
+    secondaryColor: "#1c1c22",
+    secondaryBorderColor: "#4361fc",
+    tertiaryColor: "#141418",
+    tertiaryBorderColor: "#407aff",
+    lineColor: "#6b6f8c",
+    textColor: "#f2f2f5",
+    // flowchart subgraphs
+    clusterBkg: "#18181c",
+    clusterBorder: "#9181f5",
+    edgeLabelBackground: "#1c1c22",
+    // sequence diagrams
+    actorBkg: "#18181c",
+    actorBorder: "#9181f5",
+    actorTextColor: "#f2f2f5",
+    actorLineColor: "#4d4f66",
+    signalColor: "#c9d3cf",
+    signalTextColor: "#f2f2f5",
+    labelBoxBkgColor: "#4361fc",
+    labelBoxBorderColor: "#0f0f0f",
+    labelTextColor: "#ffffff",
+    loopTextColor: "#f2f2f5",
+    noteBkgColor: "#1c1c22",
+    noteBorderColor: "#4361fc",
+    noteTextColor: "#f2f2f5",
+    activationBkgColor: "#1c1c22",
+    activationBorderColor: "#9181f5",
+  };
+
   mermaid.initialize({
     startOnLoad: false,
     theme: "base",
     securityLevel: "loose",
     fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-    themeVariables: {
-      fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-      fontSize: "15px",
-      // generic nodes (flowchart / state / misc)
-      primaryColor: "#fff3e0",
-      primaryBorderColor: "#b25b12",
-      primaryTextColor: "#3b2a18",
-      secondaryColor: "#fbe7cf",
-      secondaryBorderColor: "#8a5a2b",
-      tertiaryColor: "#fdeeda",
-      tertiaryBorderColor: "#8a5a2b",
-      lineColor: "#7a4a1d",
-      textColor: "#3b2a18",
-      // flowchart subgraphs
-      clusterBkg: "#fbe7cf",
-      clusterBorder: "#b25b12",
-      edgeLabelBackground: "#ffe9b0",
-      // sequence diagrams
-      actorBkg: "#525252",
-      actorBorder: "#140f08",
-      actorTextColor: "#f6d4b1",
-      actorLineColor: "#a98963",
-      signalColor: "#5a3d1e",
-      signalTextColor: "#3b2a18",
-      labelBoxBkgColor: "#f99021",
-      labelBoxBorderColor: "#b25b12",
-      labelTextColor: "#140f08",
-      loopTextColor: "#3b2a18",
-      noteBkgColor: "#ffe9b0",
-      noteBorderColor: "#c98a2e",
-      noteTextColor: "#3b2a18",
-      activationBkgColor: "#f6d4b1",
-      activationBorderColor: "#b25b12",
-    },
+    themeVariables: isDarkMode ? darkThemeVariables : lightThemeVariables,
     flowchart: {
       curve: "basis",
       useMaxWidth: false,
@@ -300,11 +472,13 @@ async function render() {
           ? `${numTxt} — ${rawTitle.slice(numTxt.length).trim()}`
           : rawTitle;
       btn?.addEventListener("click", () => openOverlay(svg, overlayTitle));
+      requestAnimationFrame(() => canvas.classList.add("is-rendered"));
     } catch {
       canvas.innerHTML = `<pre class="flow-code"><code>${escapeHtml(
         src,
       )}</code></pre>`;
       fig.querySelector(".fd-expand")?.remove();
+      canvas.classList.add("is-rendered");
     }
   }
 }

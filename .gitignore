@@ -26,3 +26,17 @@ yarn-error.log*
 .eslintcache
 
 readme.md
+
+# auralis-main is the source monorepo the "Normal Mode" landing page was
+# copied from — it's a separate project (blockchain contracts, AI agents,
+# dashboard), not part of this portfolio, and isn't meant to be committed here.
+/auralis-main
+
+# normal-mode/ (Auralis landing page copy): its own Next.js toolchain and
+# build cache. The compiled static output is committed under public/normal-mode
+# instead, so these don't need to be tracked.
+normal-mode/node_modules
+normal-mode/.next
+normal-mode/out
+normal-mode/*.tsbuildinfo
+normal-mode/next-env.d.ts

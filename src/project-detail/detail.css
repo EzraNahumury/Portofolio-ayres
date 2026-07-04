@@ -152,6 +152,22 @@
   box-shadow: 1px 1px 0px #f6d4b1, 6px 6px 0px rgba(82, 82, 82, 0.22);
   padding: 26px clamp(16px, 3vw, 30px) 30px;
 }
+/* main.css's global `section::after` paints a dashed divider under every
+   bare <section> (meant for the homepage's About/Projects/Contact blocks).
+   .flow-block cards are <section> elements too, so they inherited it —
+   centered on the section's now-1400px width, it landed across the middle
+   of the card, cutting straight through the last line of body text.
+   `content: none` alone isn't enough to suppress it in dark theme (the
+   watermark rule below re-enables content on this same pseudo-element at
+   higher specificity, and CSS still applies border/width/bottom from this
+   original rule per-property since neither override touches them) — every
+   property the original rule sets has to be explicitly cleared here. */
+.flow-block::after {
+  content: none;
+  border: none;
+  width: auto;
+  bottom: auto;
+}
 .flow-title {
   /* global h2 (main.css) paints the dark bar — lean into it: dark title bar,
      orange number chip, light text */
@@ -224,6 +240,12 @@
   opacity: 0.9;
 }
 .flow-body p {
+  /* main.css's global `p { width: clamp(0px,95vw,680px); margin:auto }`
+     (sized for the homepage's single narrow column) otherwise caps every
+     paragraph at a flat 680px — leaving a large dead gap on the right of
+     any text-only card now that .detail-main runs much wider. */
+  width: 100%;
+  max-width: 760px;
   margin: 10px 0;
 }
 .flow-body ul,
@@ -498,4 +520,465 @@ svg[id^="mmd-"] text.actor-man > tspan {
   font-size: 0.55em;
   letter-spacing: 0.08em;
   opacity: 0.6;
+}
+
+/* ==========================================================================
+   Motion — shared by both themes (retro + Normal Mode). Same reveal
+   convention used across the rest of the site: fade + rise on scroll,
+   staggered per element, skipped entirely under reduced-motion.
+   ========================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Loading state: three breathing dots beside the label */
+.detail-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.dl-dots {
+  display: inline-flex;
+  gap: 5px;
+}
+.dl-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: dl-breathe 1.1s ease-in-out infinite;
+}
+.dl-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.dl-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes dl-breathe {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+/* Diagram frame: lift + glow on hover, fade in once mermaid finishes render */
+.flow-diagram {
+  transition: transform 0.35s ease, box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+.flow-diagram:hover {
+  transform: translateY(-3px);
+}
+.fd-canvas {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.fd-canvas.is-rendered {
+  opacity: 1;
+}
+
+/* Back button: arrow nudges forward on hover */
+.dh-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.dh-back-btn::after {
+  content: "\2192";
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+.dh-back-btn:hover::after {
+  transform: translateX(4px);
+}
+
+/* Fullscreen diagram overlay: fade + scale transition on open/close */
+.fd-overlay {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.fd-overlay.is-open {
+  opacity: 1;
+}
+.fdo-canvas svg {
+  transition: transform 0.25s ease;
+  transform: scale(0.97);
+}
+.fd-overlay.is-open .fdo-canvas svg {
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .dl-dots span {
+    animation: none;
+    opacity: 0.7;
+  }
+  .flow-diagram,
+  .fd-canvas,
+  .fd-overlay,
+  .fdo-canvas svg {
+    transition: none;
+  }
+  .fd-canvas,
+  .fd-overlay {
+    opacity: 1;
+  }
+  .fdo-canvas svg {
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   Dark theme — activated via ?theme=dark (used when a visitor arrives here
+   from the dark "Normal Mode" landing page). This isn't just a dark recolor
+   of the retro/pixel page: it drops the CRT scanlines, dashed borders and
+   pixel font in favor of Normal Mode's own design language — system sans
+   type, soft rounded cards, subtle hairline borders, backdrop blur, and the
+   violet→blue brand gradient — so a click-through never feels like landing
+   on a different site.
+   ========================================================================== */
+[data-theme="dark"] {
+  --df-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --df-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --df-bg: #0f0f0f;
+  --df-surface: rgba(255, 255, 255, 0.03);
+  --df-surface-2: rgba(255, 255, 255, 0.05);
+  --df-border: rgba(255, 255, 255, 0.08);
+  --df-border-strong: rgba(255, 255, 255, 0.14);
+  --df-fg: #ffffff;
+  --df-fg-muted: #c9d3cf;
+  --df-fg-dim: rgba(201, 211, 207, 0.55);
+  --df-gradient: linear-gradient(90deg, #9181f5 0%, #4361fc 45.5%, #407aff 100%);
+  --df-radius: 1.75rem;
+}
+
+[data-theme="dark"] .detail-body {
+  background-color: var(--df-bg);
+  color: var(--df-fg-muted);
+  font-family: var(--df-sans);
+}
+/* Normal Mode has no CRT scanlines — drop the retro overlay entirely. */
+[data-theme="dark"] .detail-body::before {
+  content: none;
+}
+
+/* Retro page keeps a narrow 940px reading column; Normal Mode's own sections
+   (hero, footer, how-it-works, ...) all run at max-w-[1400px]. Match that
+   here so wide content — diagrams especially — isn't squeezed into a
+   column while the rest of the viewport sits empty. */
+[data-theme="dark"] .detail-main {
+  width: clamp(0px, 94vw, 1400px);
+}
+
+[data-theme="dark"] .detail-nav {
+  background: rgba(15, 15, 15, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--df-border);
+}
+[data-theme="dark"] .dn-back,
+[data-theme="dark"] .dn-brand {
+  font-family: var(--df-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--df-fg-muted);
+}
+[data-theme="dark"] .dn-brand {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--df-fg);
+}
+[data-theme="dark"] .dn-back:hover,
+[data-theme="dark"] .dn-brand:hover {
+  color: var(--df-fg);
+}
+[data-theme="dark"] .dn-lang {
+  font-family: var(--df-sans);
+  font-size: 12px;
+  color: var(--df-fg);
+  background: var(--df-surface-2);
+  border: 1px solid var(--df-border-strong);
+  border-radius: 9999px;
+  box-shadow: none;
+}
+[data-theme="dark"] .dn-lang:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+[data-theme="dark"] .dh-tag {
+  font-family: var(--df-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--df-bg);
+  background: var(--df-fg);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  box-shadow: none;
+}
+[data-theme="dark"] .dh-title {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font-family: var(--df-sans);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--df-fg);
+}
+[data-theme="dark"] .dh-blurb {
+  font-family: var(--df-sans);
+  color: var(--df-fg-muted);
+}
+[data-theme="dark"] .dh-kicker {
+  font-family: var(--df-mono);
+  color: var(--df-fg-dim);
+}
+
+[data-theme="dark"] .flow-block {
+  position: relative;
+  overflow: hidden;
+  background: var(--df-surface);
+  border: 1px solid var(--df-border);
+  border-radius: var(--df-radius);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7);
+}
+/* Cards now run the full ~1400px width, but a paragraph or two of body
+   copy doesn't need to — rather than leave the right side of the card
+   dead space, echo the footer's giant-watermark motif: a huge, near-
+   invisible section number sitting behind the text. */
+[data-theme="dark"] .flow-block > * {
+  position: relative;
+  z-index: 1;
+}
+[data-theme="dark"] .flow-block::after {
+  content: attr(data-num);
+  position: absolute;
+  top: 50%;
+  right: 28px;
+  bottom: auto;
+  left: auto;
+  width: auto;
+  border: none;
+  transform: translateY(-50%);
+  z-index: 0;
+  font-family: var(--df-sans);
+  font-weight: 700;
+  font-size: clamp(4.5rem, 11vw, 8.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+[data-theme="dark"] .flow-intro {
+  background: var(--df-surface-2);
+  border-color: var(--df-border-strong);
+}
+@media (max-width: 760px) {
+  /* Narrow cards are already snug with content — the watermark has no
+     empty space to fill and would just crowd the text. */
+  [data-theme="dark"] .flow-block::after {
+    content: none;
+  }
+}
+[data-theme="dark"] .flow-intro .fi-label {
+  font-family: var(--df-mono);
+  color: var(--df-fg-dim);
+}
+[data-theme="dark"] .flow-intro .flow-body p:not(.fi-label) {
+  font-family: var(--df-sans);
+}
+
+[data-theme="dark"] .flow-title {
+  background: none;
+  box-shadow: none;
+  padding: 0 0 18px;
+  margin: 0 0 22px;
+  border-bottom: 1px solid var(--df-border);
+  font-family: var(--df-sans);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--df-fg);
+}
+[data-theme="dark"] .ft-num {
+  font-family: var(--df-mono);
+  font-size: 0.72em;
+  font-weight: 500;
+  color: var(--df-fg-dim);
+  background: var(--df-surface-2);
+  border: 1px solid var(--df-border);
+  border-radius: 9999px;
+  padding: 5px 11px;
+  box-shadow: none;
+}
+
+[data-theme="dark"] .flow-body {
+  font-family: var(--df-sans);
+  color: var(--df-fg-muted);
+}
+[data-theme="dark"] .flow-body h3,
+[data-theme="dark"] .flow-body h4 {
+  font-family: var(--df-sans);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--df-fg);
+  border-left: none;
+  padding-left: 0;
+}
+[data-theme="dark"] .flow-body strong {
+  color: var(--df-fg);
+}
+[data-theme="dark"] .flow-body a {
+  color: #b6a8ff;
+  text-decoration-color: rgba(182, 168, 255, 0.4);
+}
+[data-theme="dark"] .flow-body code {
+  font-family: var(--df-mono);
+  background: var(--df-surface-2);
+  border: 1px solid var(--df-border);
+  color: var(--df-fg);
+}
+[data-theme="dark"] .flow-body pre.flow-code {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--df-border);
+  border-radius: 12px;
+  color: var(--df-fg-muted);
+}
+[data-theme="dark"] .flow-body hr {
+  border-top: 1px solid var(--df-border);
+}
+[data-theme="dark"] .flow-body th,
+[data-theme="dark"] .flow-body td {
+  border: 1px solid var(--df-border);
+}
+[data-theme="dark"] .flow-body th {
+  font-family: var(--df-mono);
+  background: var(--df-surface-2);
+  color: var(--df-fg);
+}
+
+[data-theme="dark"] .flow-diagram {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--df-border);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px -22px rgba(0, 0, 0, 0.6);
+}
+[data-theme="dark"] .fd-bar {
+  background: var(--df-surface-2);
+  border-bottom: 1px solid var(--df-border);
+}
+[data-theme="dark"] .fd-label {
+  font-family: var(--df-mono);
+  color: var(--df-fg-dim);
+}
+[data-theme="dark"] .fd-expand {
+  font-family: var(--df-mono);
+  color: var(--df-fg);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  box-shadow: none;
+}
+[data-theme="dark"] .fd-expand:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+[data-theme="dark"] .fd-expand:active {
+  transform: none;
+}
+[data-theme="dark"] .fd-scroll {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.08) 1px,
+    transparent 1px
+  );
+}
+[data-theme="dark"] .fd-loading {
+  font-family: var(--df-mono);
+  color: var(--df-fg-dim);
+}
+[data-theme="dark"] svg[id^="mmd-"] text.actor-man,
+[data-theme="dark"] svg[id^="mmd-"] text.actor-man > tspan {
+  fill: var(--df-fg) !important;
+}
+
+/* fullscreen diagram overlay */
+[data-theme="dark"] .fd-overlay {
+  background: rgba(6, 6, 6, 0.92);
+}
+[data-theme="dark"] .fdo-bar {
+  background: #0f0f0f;
+  border-bottom: 1px solid var(--df-border);
+}
+[data-theme="dark"] .fdo-title {
+  font-family: var(--df-sans);
+  color: var(--df-fg);
+}
+[data-theme="dark"] .fdo-zoom {
+  font-family: var(--df-mono);
+  color: var(--df-fg-muted);
+}
+[data-theme="dark"] .fdo-btn {
+  font-family: var(--df-sans);
+  color: var(--df-fg);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  border-radius: 9999px;
+}
+[data-theme="dark"] .fdo-btn:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+}
+[data-theme="dark"] .fdo-close {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fca5a5;
+}
+[data-theme="dark"] .fdo-canvas svg {
+  background: #141414;
+  border: 1px solid var(--df-border);
+  box-shadow: none;
+}
+
+/* footer / back button */
+[data-theme="dark"] .dh-back-btn {
+  font-family: var(--df-sans);
+  font-weight: 500;
+  color: var(--df-fg);
+  background: var(--df-surface-2);
+  border: 1px solid var(--df-border-strong);
+  border-radius: 9999px;
+  box-shadow: none;
+}
+[data-theme="dark"] .dh-back-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: none;
+}
+[data-theme="dark"] .detail-foot {
+  font-family: var(--df-mono);
+  color: var(--df-fg-dim);
 }
