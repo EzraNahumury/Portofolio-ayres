@@ -30,13 +30,29 @@ nav .btn {
 }
 
 .mode-btn {
-  margin-left: auto;
+  margin-left: 12px;
   opacity: 1 !important;
   pointer-events: all !important;
   font-family: "public-pixel", monospace;
   font-size: 0.7em;
   letter-spacing: 0.04em;
   white-space: nowrap;
+}
+
+/* language toggle — sits left of the mode button, always visible */
+.lang-btn {
+  margin-left: auto;
+  opacity: 1 !important;
+  pointer-events: all !important;
+  align-items: center;
+  gap: 7px;
+  font-family: "public-pixel", monospace;
+  font-size: 0.7em;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.lang-btn svg {
+  flex: none;
 }
 
 .menu-btn > .btn:first-child {

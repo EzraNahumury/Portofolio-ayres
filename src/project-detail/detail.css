@@ -1,0 +1,495 @@
+/* --- per-project flow detail page --- */
+
+.detail-body {
+  min-height: 100vh;
+  background-color: #f6d4b1;
+  color: var(--color);
+  font-family: "chill", sans-serif;
+  padding-bottom: 60px;
+}
+
+/* faint CRT scanlines over the whole page, on-theme with the main site */
+.detail-body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(20, 15, 8, 0.035) 3px,
+    rgba(20, 15, 8, 0.035) 4px
+  );
+}
+
+/* --- top nav --- */
+.detail-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px clamp(16px, 5vw, 48px);
+  background: #f6d4b1;
+  border-bottom: dashed 2px var(--color);
+  font-family: "public-pixel", monospace;
+}
+.dn-back,
+.dn-brand {
+  color: var(--color);
+  text-decoration: none;
+  font-size: 0.7em;
+  letter-spacing: 0.06em;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.dn-back:hover {
+  color: #b25b12;
+  transform: translateX(-3px);
+}
+.dn-brand {
+  font-size: 0.9em;
+  color: #140f08;
+}
+.dn-brand:hover {
+  color: #b25b12;
+}
+.dn-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.dn-lang {
+  /* neutralize the homepage .lang-btn rules (margin-left:auto etc.) */
+  margin-left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "public-pixel", monospace;
+  font-size: 0.6em;
+  letter-spacing: 0.05em;
+  color: #f6d4b1;
+  background: var(--color);
+  border: solid 1px #f6d4b1;
+  padding: 6px 10px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 rgba(82, 82, 82, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.dn-lang:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 5px 0 rgba(82, 82, 82, 0.4);
+}
+.dn-lang svg {
+  flex: none;
+}
+
+.detail-main {
+  width: clamp(0px, 92vw, 940px);
+  margin: 0 auto;
+}
+
+.detail-loading {
+  text-align: center;
+  padding: 80px 0;
+  font-family: "public-pixel", monospace;
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+/* --- hero --- */
+.detail-hero {
+  text-align: center;
+  padding: 54px 16px 40px;
+}
+.dh-tag {
+  display: block;
+  width: fit-content; /* cancel main.css global p width clamp */
+  margin: 0 auto 22px;
+  font-family: "public-pixel", monospace;
+  font-size: 0.6em;
+  letter-spacing: 0.08em;
+  color: #140f08;
+  background: #f99021;
+  padding: 6px 11px;
+  box-shadow: 0 0 12px rgba(249, 144, 33, 0.5), 3px 3px 0 rgba(20, 15, 8, 0.4);
+}
+.dh-title {
+  /* global h1 (main.css) paints the dark badge background — keep the text
+     light so it stays readable */
+  font-family: "public-pixel", monospace;
+  font-size: clamp(1.1em, 4.5vw, 1.9em);
+  line-height: 1.35;
+  color: #f6d4b1;
+  margin-bottom: 18px;
+}
+.dh-blurb {
+  width: clamp(0px, 90vw, 560px);
+  margin: 0 auto 18px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+.dh-kicker {
+  font-family: "public-pixel", monospace;
+  font-size: 0.56em;
+  letter-spacing: 0.1em;
+  color: #b25b12;
+  opacity: 0.85;
+}
+
+/* --- flow blocks --- */
+.flow-list {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 12px;
+}
+.flow-block {
+  background: #fbe7cf;
+  border: dashed 2px var(--color);
+  box-shadow: 1px 1px 0px #f6d4b1, 6px 6px 0px rgba(82, 82, 82, 0.22);
+  padding: 26px clamp(16px, 3vw, 30px) 30px;
+}
+.flow-title {
+  /* global h2 (main.css) paints the dark bar — lean into it: dark title bar,
+     orange number chip, light text */
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: auto;
+  text-align: left;
+  font-family: "public-pixel", monospace;
+  font-size: clamp(0.72em, 2.4vw, 0.92em);
+  line-height: 1.5;
+  color: #f6d4b1;
+  background-color: var(--color);
+  padding: 10px 14px 12px;
+  margin: 0 0 22px;
+  box-shadow: 3px 3px 0 rgba(20, 15, 8, 0.25);
+}
+.ft-num {
+  flex: none;
+  font-size: 0.85em;
+  color: #140f08;
+  background: #f99021;
+  padding: 5px 8px;
+  box-shadow: 0 0 10px rgba(249, 144, 33, 0.45);
+}
+
+/* --- "00" intro block: project name + what it is --- */
+.flow-intro {
+  background: #fff3e0;
+  border-style: solid;
+}
+.flow-intro .fi-label {
+  font-family: "public-pixel", monospace;
+  font-size: 0.56em;
+  letter-spacing: 0.1em;
+  color: #b25b12;
+  margin: 0 0 10px;
+}
+.flow-intro .flow-body p:not(.fi-label) {
+  font-size: 1.04em;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* --- rendered markdown body --- */
+.flow-body {
+  font-size: 0.96em;
+  line-height: 1.65;
+}
+.flow-body h3,
+.flow-body h4 {
+  font-family: "public-pixel", monospace;
+  font-size: 0.72em;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  text-align: left;
+  color: #140f08;
+  margin: 26px 0 12px;
+  padding-left: 10px;
+  border-left: solid 4px #f99021;
+}
+.flow-body h4 {
+  font-size: 0.64em;
+  opacity: 0.9;
+}
+.flow-body p {
+  margin: 10px 0;
+}
+.flow-body ul,
+.flow-body ol {
+  margin: 10px 0 14px;
+  padding-left: 22px;
+}
+.flow-body li {
+  margin: 5px 0;
+}
+.flow-body strong {
+  color: #140f08;
+}
+.flow-body a {
+  color: #b25b12;
+  text-decoration: underline;
+}
+.flow-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86em;
+  background: rgba(20, 15, 8, 0.08);
+  border: solid 1px rgba(82, 82, 82, 0.25);
+  padding: 1px 5px;
+}
+.flow-body pre.flow-code {
+  overflow-x: auto;
+  background: #241a10;
+  color: #f6d4b1;
+  padding: 14px 16px;
+  margin: 14px 0;
+  border: solid 2px var(--color);
+}
+.flow-body pre.flow-code code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+}
+.flow-body hr {
+  border: none;
+  border-top: dashed 2px rgba(82, 82, 82, 0.4);
+  margin: 22px 0;
+}
+.flow-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 0.9em;
+  display: block;
+  overflow-x: auto;
+}
+.flow-body th,
+.flow-body td {
+  border: solid 1px rgba(82, 82, 82, 0.4);
+  padding: 7px 10px;
+  text-align: left;
+}
+.flow-body th {
+  font-family: "public-pixel", monospace;
+  font-size: 0.72em;
+  background: rgba(82, 82, 82, 0.1);
+}
+
+/* --- mermaid diagrams --- */
+.flow-diagram {
+  margin: 18px 0;
+  border: solid 2px var(--color);
+  background: #fffaf2;
+  box-shadow: 4px 4px 0 rgba(82, 82, 82, 0.22);
+}
+/* mini titlebar: label + expand button */
+.fd-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 10px;
+  background: var(--color);
+}
+.fd-label {
+  font-family: "public-pixel", monospace;
+  font-size: 0.52em;
+  letter-spacing: 0.12em;
+  color: #f6d4b1;
+  opacity: 0.85;
+}
+.fd-expand {
+  font-family: "public-pixel", monospace;
+  font-size: 0.52em;
+  letter-spacing: 0.06em;
+  color: #140f08;
+  background: #f99021;
+  border: none;
+  padding: 5px 9px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 rgba(20, 15, 8, 0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.fd-expand:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(20, 15, 8, 0.4);
+}
+.fd-expand:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(20, 15, 8, 0.4);
+}
+/* scrollable viewport: natural-size diagram, dot-grid backdrop */
+.fd-scroll {
+  overflow: auto;
+  max-height: 74vh;
+  padding: 22px 18px;
+  background-image: radial-gradient(
+    rgba(122, 74, 29, 0.14) 1px,
+    transparent 1px
+  );
+  background-size: 18px 18px;
+}
+.fd-canvas {
+  width: max-content;
+  min-width: 100%;
+  text-align: center;
+}
+.fd-canvas svg {
+  display: block;
+  margin: 0 auto;
+}
+.fd-loading {
+  font-family: "public-pixel", monospace;
+  font-size: 0.6em;
+  opacity: 0.55;
+}
+
+/* Neutralize site-wide typography inside mermaid labels. main.css styles the
+   bare <p> tag (width clamp 680px + padding) which leaks into the HTML labels
+   mermaid puts in foreignObjects — inflating every node/diamond. The selector
+   targets the svg id so it also applies during mermaid's offscreen
+   measurement pass. */
+svg[id^="mmd-"] foreignObject p,
+svg[id^="mmd-"] foreignObject span {
+  width: auto;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1.4;
+  text-align: inherit;
+}
+svg[id^="mmd-"] foreignObject code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+}
+/* stick-figure actors sit on the cream canvas, so their label must be dark
+   (participant boxes are charcoal and keep the light label). mermaid's
+   injected theme CSS targets the tspan directly, so we must too. */
+svg[id^="mmd-"] text.actor-man,
+svg[id^="mmd-"] text.actor-man > tspan {
+  fill: #3b2a18 !important;
+}
+
+/* --- fullscreen diagram overlay --- */
+.fd-lock {
+  overflow: hidden;
+}
+.fd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: rgba(20, 15, 8, 0.88);
+}
+.fdo-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px clamp(12px, 3vw, 28px);
+  background: #140f08;
+  border-bottom: solid 2px #f99021;
+}
+.fdo-title {
+  font-family: "public-pixel", monospace;
+  font-size: 0.62em;
+  letter-spacing: 0.06em;
+  color: #f6d4b1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fdo-controls {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fdo-zoom {
+  font-family: "public-pixel", monospace;
+  font-size: 0.58em;
+  color: #f6d4b1;
+  min-width: 44px;
+  text-align: center;
+}
+.fdo-btn {
+  font-family: "public-pixel", monospace;
+  font-size: 0.62em;
+  color: #140f08;
+  background: #f6d4b1;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 rgba(249, 144, 33, 0.55);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.fdo-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(249, 144, 33, 0.7);
+}
+.fdo-close {
+  background: #f99021;
+}
+.fdo-body {
+  flex: 1;
+  overflow: auto;
+  padding: 26px;
+}
+.fdo-canvas {
+  width: max-content;
+  min-width: 100%;
+  min-height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.fdo-canvas svg {
+  background: #fffaf2;
+  border: solid 2px #f99021;
+  box-shadow: 0 0 30px rgba(249, 144, 33, 0.25);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+/* --- footer / back --- */
+.detail-more {
+  text-align: center;
+  margin-top: 44px;
+}
+.dh-back-btn {
+  display: inline-block;
+  font-family: "public-pixel", monospace;
+  font-size: 0.66em;
+  letter-spacing: 0.05em;
+  color: #f6d4b1;
+  background: var(--color);
+  border: solid 2px var(--color);
+  padding: 14px 24px;
+  text-decoration: none;
+  box-shadow: 4px 4px 0px rgba(82, 82, 82, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.dh-back-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 8px 0px rgba(82, 82, 82, 0.4);
+}
+.detail-foot {
+  text-align: center;
+  margin-top: 50px;
+  padding: 24px 16px;
+  font-family: "public-pixel", monospace;
+  font-size: 0.55em;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}

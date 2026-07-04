@@ -87,11 +87,11 @@
     </div>
 
     <div id="hero-backup">
-      <h3>Welcome to</h3>
+      <h3 data-i18n="hero.welcome">Welcome to</h3>
       <h1>AYRES</h1>
       <ul>
-        <li>Custom Jerseys</li>
-        <li>Digital Portfolio</li>
+        <li data-i18n="hero.li1">Custom Jerseys</li>
+        <li data-i18n="hero.li2">Digital Portfolio</li>
       </ul>
     </div>
 
@@ -145,16 +145,39 @@
             </svg>
           </a>
         </div>
+        <button
+          type="button"
+          class="btn lang-btn"
+          id="lang-btn"
+          aria-label="Ganti bahasa / Switch language"
+          title="Bahasa / Language"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="15"
+            height="15"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path
+              d="M2 12h20M12 2c2.5 2.6 4 6.2 4 10s-1.5 7.4-4 10c-2.5-2.6-4-6.2-4-10s1.5-7.4 4-10z"
+            />
+          </svg>
+          <span class="lang-btn-label">ID</span>
+        </button>
         <button type="button" class="btn mode-btn" id="mode-btn">
           Normal Mode
         </button>
       </div>
 
       <div class="menu-body" onclick="closeMenu()">
-        <a href="#home" onclick="closeMenu()">Home</a>
-        <a href="#aboutMe" onclick="closeMenu()">About</a>
-        <a href="#projects" onclick="closeMenu()">Projects</a>
-        <a href="#contact" onclick="closeMenu()">Contact</a>
+        <a href="#home" onclick="closeMenu()" data-i18n="nav.home">Home</a>
+        <a href="#aboutMe" onclick="closeMenu()" data-i18n="nav.about">About</a>
+        <a href="#projects" onclick="closeMenu()" data-i18n="nav.projects">Projects</a>
+        <a href="#contact" onclick="closeMenu()" data-i18n="nav.contact">Contact</a>
       </div>
 
       <div id="tip-scroll">Scroll &#8595;</div>
@@ -163,34 +186,34 @@
     <main>
       <section>
         <div class="about-wrap">
-          <h1 id="aboutMe" class="reveal">About AYRES</h1>
+          <h1 id="aboutMe" class="reveal" data-i18n="about.title">About AYRES</h1>
           <div class="about-grid">
             <div class="about-text">
-              <p class="reveal">
+              <p class="reveal" data-i18n="about.p1">
                 AYRES is more than just a custom apparel brand. AYRES is a home
                 for jerseys crafted with precision, identity, and a higher
                 standard of quality.
               </p>
-              <p class="reveal">
+              <p class="reveal" data-i18n="about.p2">
                 Based in Yogyakarta, AYRES is an authentic Indonesian custom
                 jersey brand that blends creative design, precise production, and
                 our own Pattern Lab technology. Every cut, pattern, and detail is
                 built with one purpose: to create jerseys that do not just look
                 good, but feel worth wearing with pride.
               </p>
-              <p class="reveal">
+              <p class="reveal" data-i18n="about.p3">
                 Behind every AYRES product is a growing digital ecosystem. From
                 websites and online storefronts to internal systems, everything
                 is designed to make the ordering process easier, more
                 transparent, and more reliable.
               </p>
-              <p class="reveal">
+              <p class="reveal" data-i18n="about.p4">
                 With experience serving thousands of teams and producing tens of
                 thousands of jerseys, AYRES continues to grow as a brand that
                 stands for quality, guaranteed deadlines, no minimum order, and
                 clear pricing from the very beginning.
               </p>
-              <p class="reveal">
+              <p class="reveal" data-i18n="about.p5">
                 This website is AYRES’ digital portfolio. Here, we showcase the
                 platforms, systems, and web products we have designed and built
                 to support the brand’s growth, strengthen business operations,
@@ -204,50 +227,50 @@
                   <div class="stat-num" data-target="2600" data-suffix="+">
                     0
                   </div>
-                  <div class="stat-label">Teams Served</div>
+                  <div class="stat-label" data-i18n="stats.teams">Teams Served</div>
                 </div>
                 <div class="stat">
                   <div class="stat-num" data-target="35000" data-suffix="+">
                     0
                   </div>
-                  <div class="stat-label">Jerseys Produced</div>
+                  <div class="stat-label" data-i18n="stats.jerseys">Jerseys Produced</div>
                 </div>
                 <div class="stat">
                   <div class="stat-num" data-target="8" data-suffix="+">0</div>
-                  <div class="stat-label">Sports Covered</div>
+                  <div class="stat-label" data-i18n="stats.sports">Sports Covered</div>
                 </div>
                 <div class="stat">
                   <div class="stat-num" data-target="1" data-suffix="">0</div>
-                  <div class="stat-label">Minimum Order</div>
+                  <div class="stat-label" data-i18n="stats.minOrder">Minimum Order</div>
                 </div>
               </div>
 
               <div class="features reveal">
                 <div class="feature">
                   <span class="feature-index">01</span>
-                  <div class="feature-title">Pattern Lab Technology</div>
-                  <div class="feature-text">
+                  <div class="feature-title" data-i18n="feat1.title">Pattern Lab Technology</div>
+                  <div class="feature-text" data-i18n="feat1.text">
                     In-house patterns for a precise, consistent fit.
                   </div>
                 </div>
                 <div class="feature">
                   <span class="feature-index">02</span>
-                  <div class="feature-title">Guaranteed Deadlines</div>
-                  <div class="feature-text">
+                  <div class="feature-title" data-i18n="feat2.title">Guaranteed Deadlines</div>
+                  <div class="feature-text" data-i18n="feat2.text">
                     Clear timelines, so your kit arrives right on time.
                   </div>
                 </div>
                 <div class="feature">
                   <span class="feature-index">03</span>
-                  <div class="feature-title">Transparent Pricing</div>
-                  <div class="feature-text">
+                  <div class="feature-title" data-i18n="feat3.title">Transparent Pricing</div>
+                  <div class="feature-text" data-i18n="feat3.text">
                     Honest prices up front — no setup or hidden fees.
                   </div>
                 </div>
                 <div class="feature">
                   <span class="feature-index">04</span>
-                  <div class="feature-title">Authentically Indonesian</div>
-                  <div class="feature-text">
+                  <div class="feature-title" data-i18n="feat4.title">Authentically Indonesian</div>
+                  <div class="feature-text" data-i18n="feat4.text">
                     Designed and produced in Yogyakarta.
                   </div>
                 </div>
@@ -261,13 +284,13 @@
         <div class="projects-wrap">
           <h1 id="projects" class="reveal-boot">Projects</h1>
           <hr class="reveal-line" />
-          <p class="projects-intro reveal">
+          <p class="projects-intro reveal" data-i18n="projects.intro">
             A growing stack of web platforms, tools and AI systems we have
             designed and built to power the AYRES brand and business.
           </p>
 
           <div class="projects-grid">
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=hr">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -279,7 +302,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">HR Attendance System</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.hr.desc">
                   Employee attendance and HR management platform with digital
                   check-in and reporting.
                 </p>
@@ -288,10 +311,11 @@
                   <li>HR</li>
                   <li>Dashboard</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
 
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=crm">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -303,7 +327,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">Production CRM</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.crm.desc">
                   CRM to track production orders, customers and workflow from
                   request to delivery.
                 </p>
@@ -312,10 +336,11 @@
                   <li>CRM</li>
                   <li>Operations</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
 
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=ai-medsos">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -327,7 +352,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">Social Media AI Agent</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.ai-medsos.desc">
                   AI agent that drafts, schedules and manages social media
                   content automatically.
                 </p>
@@ -336,10 +361,11 @@
                   <li>Automation</li>
                   <li>Social Media</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
 
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=ai-marketing">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -351,7 +377,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">Marketing AI Agent</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.ai-marketing.desc">
                   AI agent that plans campaigns, writes copy and automates
                   marketing across channels.
                 </p>
@@ -360,10 +386,11 @@
                   <li>Marketing</li>
                   <li>Automation</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
 
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=ssb">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -375,7 +402,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">SSB Management</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.ssb.desc">
                   Management system for a football academy — members, schedules
                   and payments in one place.
                 </p>
@@ -383,10 +410,11 @@
                   <li>Web App</li>
                   <li>Management</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
 
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=chatbot">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -398,7 +426,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">Customer Service Chatbot</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.chatbot.desc">
                   Conversational chatbot that answers customer questions and
                   handles orders 24/7.
                 </p>
@@ -407,10 +435,11 @@
                   <li>Chatbot</li>
                   <li>Support</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
 
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=company-profile">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -422,7 +451,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">Company Profile</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.company-profile.desc">
                   Company profile website showcasing the AYRES brand, story and
                   capabilities.
                 </p>
@@ -430,10 +459,11 @@
                   <li>Web</li>
                   <li>Company Profile</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
 
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=landing-page">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -445,7 +475,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">Company Landing Page</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.landing-page.desc">
                   High-converting landing page to introduce products and capture
                   new leads.
                 </p>
@@ -454,10 +484,11 @@
                   <li>Landing Page</li>
                   <li>Marketing</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
 
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=online-shop">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -469,7 +500,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">AYRES Online Shop</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.online-shop.desc">
                   E-commerce storefront for ordering custom jerseys online, end
                   to end.
                 </p>
@@ -477,10 +508,11 @@
                   <li>E-Commerce</li>
                   <li>Web App</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
 
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=reseller">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -492,7 +524,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">Reseller Web</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.reseller.desc">
                   Portal for resellers to browse products, place orders and
                   track their sales.
                 </p>
@@ -501,10 +533,11 @@
                   <li>E-Commerce</li>
                   <li>Reseller</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
 
-            <article class="project-card">
+            <a class="project-card" href="/project.html?p=invitation">
               <div class="pc-thumb">
                 <img
                   class="pc-img"
@@ -516,7 +549,7 @@
               </div>
               <div class="pc-body">
                 <h3 class="pc-title">Invitation Web</h3>
-                <p class="pc-desc">
+                <p class="pc-desc" data-i18n="proj.invitation.desc">
                   Digital invitation web builder with elegant, shareable event
                   pages.
                 </p>
@@ -524,8 +557,9 @@
                   <li>Web</li>
                   <li>Invitation</li>
                 </ul>
+                <div class="pc-cta" data-i18n="proj.cta">VIEW FLOW →</div>
               </div>
-            </article>
+            </a>
           </div>
 
           <div class="projects-more reveal">
@@ -538,7 +572,7 @@
 
       <section class="contact-section">
         <div class="contact-wrap">
-          <h1 id="contact" class="reveal-boot">Contact</h1>
+          <h1 id="contact" class="reveal-boot" data-i18n="contact.title">Contact</h1>
           <div class="contact-grid">
             <!-- Location -->
             <div class="contact-location reveal">
@@ -549,7 +583,7 @@
                   <span class="cs-dot"></span>
                   <span class="cs-title">ayres://location</span>
                 </div>
-                <div class="cc-label cc-label-pad">LOKASI KAMI</div>
+                <div class="cc-label cc-label-pad" data-i18n="contact.location">LOKASI KAMI</div>
                 <p class="cc-address">
                   Jl. Wonocatur No.427, Jeruklegi, Banguntapan, D.I. Yogyakarta
                 </p>
@@ -562,7 +596,7 @@
                   ></iframe>
                 </div>
                 <a
-                  class="cc-map-btn"
+                  class="cc-map-btn" data-i18n="contact.mapBtn"
                   href="https://www.google.com/maps?ll=-7.806717,110.405682&z=17&t=m&hl=en&gl=ID&mapclient=embed&cid=7178737846643624676"
                   target="_blank"
                   rel="noopener"
@@ -588,21 +622,21 @@
                   </svg>
                 </span>
                 <span class="wa-info">
-                  <span class="cc-label">CHAT LANGSUNG VIA WHATSAPP</span>
+                  <span class="cc-label" data-i18n="contact.waLabel">CHAT LANGSUNG VIA WHATSAPP</span>
                   <span class="wa-number">0878-1831-0416</span>
-                  <span class="wa-cta">CHAT SEKARANG →</span>
+                  <span class="wa-cta" data-i18n="contact.waCta">CHAT SEKARANG →</span>
                 </span>
               </a>
 
               <div class="cc-row">
                 <div class="cc-card reveal">
-                  <div class="cc-label">EMAIL ORDER</div>
+                  <div class="cc-label" data-i18n="contact.emailOrder">EMAIL ORDER</div>
                   <a class="cc-link" href="mailto:order@ayresapparel.com"
                     >order@ayresapparel.com</a
                   >
                 </div>
                 <div class="cc-card reveal">
-                  <div class="cc-label">EMAIL PENGADUAN</div>
+                  <div class="cc-label" data-i18n="contact.emailComplaint">EMAIL PENGADUAN</div>
                   <a class="cc-link" href="mailto:pengaduan@ayresapparel.com"
                     >pengaduan@ayresapparel.com</a
                   >
@@ -611,8 +645,8 @@
 
               <div class="cc-card cc-hours reveal">
                 <div>
-                  <div class="cc-label">JAM OPERASIONAL</div>
-                  <div class="cc-hours-text">
+                  <div class="cc-label" data-i18n="contact.hoursLabel">JAM OPERASIONAL</div>
+                  <div class="cc-hours-text" data-i18n="contact.hoursText">
                     Senin – Sabtu · 09.00 – 16.30 WIB
                   </div>
                 </div>
@@ -653,21 +687,21 @@
               alt="AYRES"
               class="footer-logo"
             />
-            <p class="footer-tagline">
+            <p class="footer-tagline" data-i18n="footer.tagline">
               Home of Authentically Indonesian Custom Jerseys. A cut above.
             </p>
           </div>
 
           <div class="footer-cols">
             <div class="footer-col">
-              <div class="footer-col-title">MENU</div>
-              <a href="#home">Home</a>
-              <a href="#aboutMe">About</a>
-              <a href="#projects">Projects</a>
-              <a href="#contact">Contact</a>
+              <div class="footer-col-title" data-i18n="footer.menu">MENU</div>
+              <a href="#home" data-i18n="nav.home">Home</a>
+              <a href="#aboutMe" data-i18n="nav.about">About</a>
+              <a href="#projects" data-i18n="nav.projects">Projects</a>
+              <a href="#contact" data-i18n="nav.contact">Contact</a>
             </div>
             <div class="footer-col">
-              <div class="footer-col-title">CONNECT</div>
+              <div class="footer-col-title" data-i18n="footer.connect">CONNECT</div>
               <a
                 href="https://instagram.com/ayresapparel"
                 target="_blank"
@@ -686,7 +720,7 @@
               <a href="mailto:admin@ayresapparel.com">Email</a>
             </div>
             <div class="footer-col">
-              <div class="footer-col-title">SHOP</div>
+              <div class="footer-col-title" data-i18n="footer.shop">SHOP</div>
               <a
                 href="https://shopee.co.id/ayresapparel"
                 target="_blank"
@@ -702,11 +736,11 @@
             </div>
           </div>
 
-          <a href="#home" class="footer-top-btn">Back to top ↑</a>
+          <a href="#home" class="footer-top-btn" data-i18n="footer.backTop">Back to top ↑</a>
         </div>
 
         <div class="footer-bottom">
-          <div>© 2026 AYRES. All rights reserved.</div>
+          <div data-i18n="footer.rights">© 2026 AYRES. All rights reserved.</div>
         </div>
       </div>
 
@@ -863,11 +897,15 @@
             return;
           }
           function label() {
+            var i18n = window.__i18n;
+            var less = i18n ? i18n.t("more.less") : "Show Less";
+            var more = i18n ? i18n.t("more.show") : "Show More";
             btn.textContent = grid.classList.contains("show-all")
-              ? "Show Less"
-              : "Show More (" + extra.length + " more)";
+              ? less
+              : more + " (" + extra.length + ")";
           }
           label();
+          document.addEventListener("langchange", label);
           btn.addEventListener("click", function () {
             const opened = grid.classList.toggle("show-all");
             if (opened) {
@@ -971,9 +1009,18 @@
           var open = day >= 1 && day <= 6 && mins >= 540 && mins <= 990;
           el.classList.toggle("is-open", open);
           el.classList.toggle("is-closed", !open);
-          if (txt) txt.textContent = open ? "Buka" : "Tutup";
+          var i18n = window.__i18n;
+          if (txt)
+            txt.textContent = open
+              ? i18n
+                ? i18n.t("status.open")
+                : "Buka"
+              : i18n
+                ? i18n.t("status.closed")
+                : "Tutup";
         }
         update();
+        document.addEventListener("langchange", update);
         setInterval(update, 30000);
       })();
     </script>

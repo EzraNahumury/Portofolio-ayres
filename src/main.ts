@@ -1,6 +1,8 @@
 import "./main.css";
 import WebGL from "./webgl";
+import { initI18n } from "./i18n";
 
+initI18n();
 WebGL();
 
 const root = document.documentElement;
