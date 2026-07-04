@@ -198,6 +198,12 @@
 
 /* --- rendered markdown body --- */
 .flow-body {
+  /* .detail-main inherits main.css's global `main { text-align: center }`
+     (meant for the homepage layout). Without this override, wrapped list
+     items and paragraphs center-align under their bullet/first line instead
+     of reading left-to-right, which is what made long bullets with inline
+     code chips look jumbled. */
+  text-align: left;
   font-size: 0.96em;
   line-height: 1.65;
 }
