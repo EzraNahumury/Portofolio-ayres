@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap, registerGsap } from "@/lib/gsap";
 import { HalftoneField } from "../visuals/halftone-field";
 import { StackMarquee } from "./stack-marquee";
+import { goToRetroMode } from "@/lib/retro-nav";
 
 type Card = {
   title: string;
@@ -165,10 +166,17 @@ export function SecurityIntegrations() {
           {CARDS.map((c) => (
             // Plain <a>, not next/link — these point at the retro
             // homepage's own anchors and must escape the /normal-mode
-            // basePath next/link would otherwise prepend.
+            // basePath next/link would otherwise prepend. When shown inside
+            // the retro site's iframe overlay, hand off via postMessage
+            // instead so the retro page isn't loaded a second time nested
+            // inside the iframe.
             <a
               key={c.title}
               href={c.href}
+              onClick={(e) => {
+                const hash = c.href.includes("#") ? "#" + c.href.split("#")[1] : undefined;
+                if (goToRetroMode(hash)) e.preventDefault();
+              }}
               className="si-card group relative flex h-[270px] w-[238px] flex-col rounded-[20px] bg-white text-bg shadow-[0_24px_50px_-22px_rgba(0,0,0,0.55)] transition-transform duration-500 hover:-translate-y-1.5"
             >
               <div className="px-5 pt-5">

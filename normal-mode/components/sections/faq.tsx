@@ -175,7 +175,7 @@ export function FAQ() {
 
           {/* Expanded state — reveals as window grows */}
           <div className="faq-expanded absolute inset-0 flex flex-col overflow-hidden opacity-0">
-            <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col overflow-hidden px-7 pt-10 sm:px-12 sm:pt-12 lg:px-20 lg:pt-14">
+            <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col overflow-hidden px-7 pt-20 sm:px-12 sm:pt-24 lg:px-20 lg:pt-28">
               <h2
                 className="text-[clamp(1.5rem,3.4vw,3.6rem)] font-medium leading-[1.1] tracking-[-0.01em] text-[#0a0a0a]"
                 style={{
@@ -192,13 +192,13 @@ export function FAQ() {
                 </span>
               </h2>
 
-              <div className="mx-auto mt-5 flex w-full min-h-0 max-w-[1120px] flex-1 flex-col lg:mt-6">
+              <div className="mx-auto mt-3 flex w-full min-h-0 max-w-[1120px] flex-1 flex-col lg:mt-4">
                 {/* min-h-0 on the flex parent + overflow-y-auto here lets a
                     long expanded answer scroll within its own bounds instead
                     of being clipped by .faq-expanded's overflow-hidden when
                     the section is pinned to exactly one viewport tall. */}
                 <div
-                  className="faq-list min-h-0 flex-1 space-y-1.5 overflow-y-auto pb-2 pr-1 sm:space-y-2 [&::-webkit-scrollbar]:hidden"
+                  className="faq-list min-h-0 flex-1 space-y-1 overflow-y-auto pb-2 pr-1 sm:space-y-1.5 [&::-webkit-scrollbar]:hidden"
                   style={{ scrollbarWidth: "none" }}
                 >
                   {faq.items.map((item, i) => {
@@ -219,7 +219,7 @@ export function FAQ() {
                           type="button"
                           onClick={() => setOpenIdx(isOpen ? null : i)}
                           aria-expanded={isOpen}
-                          className="flex w-full items-center justify-between gap-5 rounded-full px-7 py-2.5 text-left sm:px-9 sm:py-3"
+                          className="flex w-full items-center justify-between gap-5 rounded-full px-7 py-2 text-left sm:px-9 sm:py-2.5"
                         >
                           <span
                             className="text-sm font-medium leading-snug text-[#0a0a0a] sm:text-base lg:text-lg"
@@ -232,7 +232,7 @@ export function FAQ() {
                           </span>
                           <span
                             aria-hidden
-                            className="grid size-11 shrink-0 place-items-center rounded-full text-white shadow-[0_-4px_8px_rgba(255,255,255,0.25)_inset] sm:size-12"
+                            className="grid size-9 shrink-0 place-items-center rounded-full text-white shadow-[0_-4px_8px_rgba(255,255,255,0.25)_inset] sm:size-10"
                             style={{ background: "var(--gradient-brand)" }}
                           >
                             {isOpen ? (
@@ -261,7 +261,7 @@ export function FAQ() {
               </div>
 
               {/* Footer — spans the WIDER outer container (not constrained to accordion's max-w) */}
-              <div className="faq-footer mt-3 flex flex-col items-start justify-between gap-4 pb-4 sm:flex-row sm:items-center lg:mt-4 lg:pb-5">
+              <div className="faq-footer mt-2 flex flex-col items-start justify-between gap-4 pb-3 sm:flex-row sm:items-center lg:mt-3 lg:pb-4">
                 <div
                   className="flex max-w-xl items-start gap-3 text-[15px] leading-snug text-[#0a0a0a]/55 sm:text-base lg:text-[17px]"
                   style={{

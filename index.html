@@ -41,6 +41,13 @@
 
     <canvas class="webgl"></canvas>
 
+    <div id="normal-mode-overlay">
+      <iframe
+        id="normal-mode-frame"
+        title="AYRES — Normal Mode"
+      ></iframe>
+    </div>
+
     <div id="hero-backup">
       <h3 data-i18n="hero.welcome">Welcome to</h3>
       <h1>AYRES</h1>
@@ -710,14 +717,41 @@
         }
       }
 
-      // "Normal Mode" swaps out of the retro 3D terminal into a
-      // conventional landing page, opened in a new tab.
+      // "Normal Mode" swaps out of the retro 3D terminal for a conventional
+      // landing page. It's shown as an in-page iframe overlay (lazy-loaded
+      // on first use) instead of a navigation, so switching modes never
+      // reloads the page or opens a new tab — and "Retro Mode" inside that
+      // page can hand control back the same way (see the message listener
+      // below).
       const modeBtn = document.getElementById("mode-btn");
-      if (modeBtn) {
-        modeBtn.addEventListener("click", function () {
-          window.open("/normal-mode/index.html", "_blank", "noopener");
-        });
+      const normalModeOverlay = document.getElementById("normal-mode-overlay");
+      const normalModeFrame = document.getElementById("normal-mode-frame");
+
+      function showNormalMode() {
+        if (normalModeFrame && !normalModeFrame.src) {
+          normalModeFrame.src = "/normal-mode/index.html";
+        }
+        if (normalModeOverlay) normalModeOverlay.classList.add("is-visible");
       }
+
+      function showRetroMode(hash) {
+        if (normalModeOverlay) normalModeOverlay.classList.remove("is-visible");
+        if (hash) {
+          const target = document.querySelector(hash);
+          if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      if (modeBtn) {
+        modeBtn.addEventListener("click", showNormalMode);
+      }
+
+      window.addEventListener("message", function (event) {
+        if (event.origin !== window.location.origin) return;
+        if (event.data && event.data.type === "ayres:retro-mode") {
+          showRetroMode(event.data.hash);
+        }
+      });
     </script>
     <script>
       (function () {

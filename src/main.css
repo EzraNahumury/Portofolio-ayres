@@ -39,8 +39,30 @@ body {
   z-index: 1;
 }
 
+/* "Normal Mode" toggle — an in-page overlay rather than a navigation, so
+   switching modes never leaves this document or opens a new tab/page. */
+#normal-mode-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+#normal-mode-overlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+#normal-mode-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
 #hero-backup {
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: center;
   gap: 16px;

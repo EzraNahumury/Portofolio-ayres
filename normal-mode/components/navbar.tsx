@@ -7,12 +7,18 @@ import { useGSAP } from "@gsap/react";
 import { gsap, registerGsap } from "@/lib/gsap";
 import { nav } from "@/lib/content";
 import { cn } from "@/lib/cn";
+import { goToRetroMode } from "@/lib/retro-nav";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const mobilePanelRef = useRef<HTMLDivElement>(null);
+
+  // Falls back to a normal navigation to "/" when visited standalone.
+  const handleRetroModeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (goToRetroMode()) event.preventDefault();
+  };
 
   useEffect(() => {
     registerGsap();
@@ -116,6 +122,7 @@ export function Navbar() {
           <span className="nav-item inline-block">
             <a
               href={nav.cta.href}
+              onClick={handleRetroModeClick}
               className="group inline-flex items-center gap-2.5 rounded-full px-5 py-2 text-sm font-medium text-white shadow-[0_-4px_7px_rgba(50,50,50,0.32)_inset] transition-transform hover:-translate-y-[1px]"
               style={{ background: "var(--gradient-brand)" }}
             >
@@ -162,7 +169,10 @@ export function Navbar() {
                   /normal-mode basePath onto this retro-site-root link. */}
               <a
                 href={nav.cta.href}
-                onClick={() => setOpen(false)}
+                onClick={(e) => {
+                  setOpen(false);
+                  handleRetroModeClick(e);
+                }}
                 className="btn-pill-light group inline-flex items-center gap-3 px-6 py-3 text-sm font-medium will-change-transform hover:-translate-y-[1px] active:translate-y-0"
               >
                 <span>{nav.cta.label}</span>
