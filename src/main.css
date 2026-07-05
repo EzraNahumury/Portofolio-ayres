@@ -39,6 +39,22 @@ body {
   z-index: 1;
 }
 
+/* While the Normal Mode overlay is open, the retro page behind it must not
+   scroll — otherwise its scrollbar sits next to the iframe's own scrollbar
+   (double scrollbar). */
+html.nm-open,
+html.nm-open body {
+  overflow: hidden;
+  height: 100%;
+}
+
+/* ?retro=1 boot flag (set in <head> before first paint): hide the overlay
+   markup until the toggle script formally dismisses it. */
+html.force-retro #normal-mode-overlay {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* "Normal Mode" toggle — an in-page overlay rather than a navigation, so
    switching modes never leaves this document or opens a new tab/page. */
 #normal-mode-overlay {

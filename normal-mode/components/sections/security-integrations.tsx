@@ -8,6 +8,7 @@ import { gsap, registerGsap } from "@/lib/gsap";
 import { HalftoneField } from "../visuals/halftone-field";
 import { StackMarquee } from "./stack-marquee";
 import { goToRetroMode } from "@/lib/retro-nav";
+import { useLang } from "@/lib/lang";
 
 type Card = {
   title: string;
@@ -17,24 +18,47 @@ type Card = {
   alt: string;
 };
 
-const CARDS: Card[] = [
+const CARDS_EN: Card[] = [
   {
-    title: "Authentically AYRES",
+    title: "Our Sportswear Brand",
     cta: "About Us",
     href: "/#aboutMe",
     image: "/a1-new.png",
-    alt: "AYRES Apparel — authentic, in-house brand",
+    alt: "AYRES Apparel — authentic, in-house sportswear brand",
   },
   {
-    title: "Pattern Lab Technology",
+    title: "Our Web Ecosystem",
     cta: "See Projects",
     href: "/#projects",
     image: "/a2-new.png",
-    alt: "AYRES Pattern Lab technology",
+    alt: "The web apps AYRES built to power its sales",
   },
 ];
 
+const CARDS_ID: Card[] = [
+  { ...CARDS_EN[0], title: "Brand Sportswear Kami", cta: "Tentang Kami" },
+  { ...CARDS_EN[1], title: "Ekosistem Web Kami", cta: "Lihat Projects" },
+];
+
+const COPY = {
+  en: {
+    titleA: "Craft &",
+    titleB: "Technology",
+    body: "Every AYRES product is designed and produced in-house — and every sale is powered by software we wrote ourselves. AI agents fill the funnel, the online shop and chatbot close the order, and the production CRM makes sure it ships on time. Craft sells the first jersey; technology sells the next thousand.",
+    builtWith: "Built With",
+  },
+  id: {
+    titleA: "Karya &",
+    titleB: "Teknologi",
+    body: "Setiap produk AYRES dirancang dan diproduksi sendiri — dan setiap penjualan ditenagai software yang kami tulis sendiri. AI agent mengisi funnel, toko online dan chatbot menutup order, dan CRM produksi memastikan semuanya terkirim tepat waktu. Karya menjual jersey pertama; teknologi menjual seribu berikutnya.",
+    builtWith: "Dibangun Dengan",
+  },
+};
+
 export function SecurityIntegrations() {
+  const { lang } = useLang();
+  const CARDS = lang === "en" ? CARDS_EN : CARDS_ID;
+  const copy = COPY[lang];
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -134,10 +158,10 @@ export function SecurityIntegrations() {
             }}
           >
             <span className="si-title-line block overflow-hidden">
-              <span className="inline-block">Craft &</span>
+              <span className="inline-block">{copy.titleA}</span>
             </span>
             <span className="si-title-line block overflow-hidden">
-              <span className="inline-block">Technology</span>
+              <span className="inline-block">{copy.titleB}</span>
             </span>
           </h2>
 
@@ -152,11 +176,7 @@ export function SecurityIntegrations() {
               className="text-sm leading-relaxed text-fg-muted sm:text-[15px]"
               style={{ fontFamily: "var(--font-tech), ui-sans-serif, system-ui" }}
             >
-              Every AYRES product is designed and produced in-house, backed by
-              our own Pattern Lab technology. Fabric, print accuracy and
-              stitching are checked against our quality bar before anything
-              ships, with transparent pricing and guaranteed deadlines from
-              the very first message.
+              {copy.body}
             </p>
           </div>
         </div>
@@ -242,7 +262,7 @@ export function SecurityIntegrations() {
               fontFamily: "var(--font-geist-sans), ui-sans-serif, system-ui",
             }}
           >
-            Built With
+            {copy.builtWith}
           </p>
         </div>
         <div className="mt-7">

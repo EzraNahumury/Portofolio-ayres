@@ -27,24 +27,22 @@ export const hero = {
   // FIVA-style hero composition
   headline: [
     [
-      { text: "Authentically", tone: "muted" },
-      { text: "Indonesian", tone: "strong" },
-      { text: "Custom Jerseys.", tone: "muted" },
+      { text: "Indonesian", tone: "muted" },
+      { text: "Sportswear.", tone: "strong" },
     ],
-    [{ text: "Crafted in Yogyakarta.", tone: "strong" }],
+    [{ text: "Powered by the Web.", tone: "strong" }],
     [
-      { text: "Experience", tone: "muted" },
-      { text: "a cut above", tone: "strong" },
+      { text: "Every sale runs on", tone: "muted" },
     ],
-    [{ text: "with AYRES.", tone: "strong" }],
+    [{ text: "apps we built ourselves.", tone: "strong" }],
   ] as const,
   description:
-    "AYRES is a home for jerseys crafted with precision, identity, and a higher standard of quality — built on our own Pattern Lab technology, with guaranteed deadlines, no minimum order, and transparent pricing.",
+    "AYRES is an Indonesian sportswear brand from Yogyakarta — and every part of how we sell runs on web apps we built ourselves: AI marketing agents, an online shop, a 24/7 chatbot and a production CRM, all working to turn visitors into orders.",
   openApp: { label: "Chat on WhatsApp", href: "https://wa.me/6287818310416" },
 };
 
 export const whatYouCanDo = {
-  title: "What We've Built",
+  title: "The Apps Behind Our Sales",
   showMoreLabel: "Show More",
   showLessLabel: "Show Less",
   visibleCount: 6,
@@ -141,19 +139,19 @@ export const whatYouCanDo = {
 };
 
 export const howAuralis = {
-  title: "How AYRES Works",
+  title: "How AYRES Optimizes Sales",
   cards: [
     {
       index: "01",
-      name: "Pattern Lab Precision",
+      name: "One Web, Every Channel",
       body:
-        "Every order moves through six checkpoints — cutting, sewing, printing, fitting, quality control, and packing — all converging on our Pattern Lab before it ships. The result: a consistent fit, order after order.",
+        "Six of our own apps run the funnel end-to-end — AI ad and social agents pull visitors in, the online shop and chatbot close the sale, the CRM and shipping flow deliver it. An order can travel from first click to doorstep without a single manual handoff.",
     },
     {
       index: "02",
-      name: "Quality Assurance Score",
+      name: "Visitors Become Repeat Buyers",
       body:
-        "Every batch is scored against our internal quality bar before it leaves the workshop — fabric, print accuracy, and stitching all count. AYRES Certified batches clear the highest tier.",
+        "Every channel feeds one pipeline: campaigns bring visitors, the shop and chatbot turn them into orders, and on-time delivery turns orders into repeat buyers. Because we built the stack ourselves, we can measure — and optimize — every step of that journey.",
     },
   ],
 };

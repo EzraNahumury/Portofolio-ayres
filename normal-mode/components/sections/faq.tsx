@@ -4,9 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { ArrowUpRight, Plus, Minus } from "lucide-react";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap";
-import { faq } from "@/lib/content";
+import { faq as faqEn } from "@/lib/content";
+import { faqId } from "@/lib/content-id";
+import { useLang } from "@/lib/lang";
 
 export function FAQ() {
+  const { lang } = useLang();
+  const faq = lang === "en" ? faqEn : faqId;
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   // No item open by default — all 7 questions stay collapsed so every

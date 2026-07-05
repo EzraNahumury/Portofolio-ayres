@@ -4,10 +4,26 @@ import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap";
-import { whatYouCanDo } from "@/lib/content";
-import { AgentMesh } from "../visuals/agent-mesh";
+import { whatYouCanDo as wycdEn } from "@/lib/content";
+import { whatYouCanDoId } from "@/lib/content-id";
+import { useLang } from "@/lib/lang";
+import { ProjectVisual } from "../visuals/project-visual";
 
 export function WhatYouCanDo() {
+  const { lang } = useLang();
+  const whatYouCanDo =
+    lang === "en"
+      ? wycdEn
+      : {
+          ...wycdEn,
+          title: whatYouCanDoId.title,
+          showMoreLabel: whatYouCanDoId.showMoreLabel,
+          showLessLabel: whatYouCanDoId.showLessLabel,
+          cards: wycdEn.cards.map((c) => ({
+            ...c,
+            body: whatYouCanDoId.bodies[c.slug] ?? c.body,
+          })),
+        };
   const ref = useRef<HTMLElement>(null);
   const [showAll, setShowAll] = useState(false);
   const visible = showAll
@@ -213,7 +229,7 @@ export function WhatYouCanDo() {
                   <div
                     className="wycd-visual relative aspect-[4/3] w-full overflow-hidden rounded-[1.25rem] border border-border bg-bg/70 transition-transform duration-700 ease-out [transform:translateZ(20px)] group-hover:scale-[1.025]"
                   >
-                    <AgentMesh labels={c.meshLabels} centerLabel={c.meshCenter} />
+                    <ProjectVisual kind={c.slug} />
                     <span
                       className="absolute left-3 top-3 z-10 rounded-full bg-fg px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-bg"
                       style={{

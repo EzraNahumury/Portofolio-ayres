@@ -24,54 +24,54 @@ const STRINGS: Record<string, { id: string; en: string }> = {
   // --- about section ---
   "about.title": { id: "Tentang AYRES", en: "About AYRES" },
   "about.p1": {
-    id: "AYRES lebih dari sekadar brand apparel custom. AYRES adalah rumah bagi jersey yang dibuat dengan presisi, identitas, dan standar kualitas yang lebih tinggi.",
-    en: "AYRES is more than just a custom apparel brand. AYRES is a home for jerseys crafted with precision, identity, and a higher standard of quality.",
+    id: "AYRES adalah brand sportswear asli Indonesia. Tapi yang membuat kami berbeda bukan cuma jerseynya — melainkan cara kami menjualnya: hampir seluruh proses penjualan AYRES berjalan di atas aplikasi web yang kami bangun sendiri.",
+    en: "AYRES is an authentic Indonesian sportswear brand. But what sets us apart isn't just the jerseys — it's how we sell them: nearly every part of AYRES's sales runs on web apps we built ourselves.",
   },
   "about.p2": {
-    id: "Berbasis di Yogyakarta, AYRES adalah brand jersey custom asli Indonesia yang memadukan desain kreatif, produksi presisi, dan teknologi Pattern Lab milik kami sendiri. Setiap potongan, pola, dan detail dibuat dengan satu tujuan: menciptakan jersey yang tidak hanya terlihat bagus, tapi juga layak dikenakan dengan bangga.",
-    en: "Based in Yogyakarta, AYRES is an authentic Indonesian custom jersey brand that blends creative design, precise production, and our own Pattern Lab technology. Every cut, pattern, and detail is built with one purpose: to create jerseys that do not just look good, but feel worth wearing with pride.",
+    id: "Berbasis di Yogyakarta, kami memproduksi jersey custom dengan teknologi Pattern Lab milik sendiri. Pengalaman melayani ribuan tim mengajarkan satu hal: produk bagus terjual lebih cepat dengan software yang bagus.",
+    en: "Based in Yogyakarta, we produce custom jerseys with our own Pattern Lab technology. Serving thousands of teams taught us one thing: great products sell faster with great software.",
   },
   "about.p3": {
-    id: "Di balik setiap produk AYRES ada ekosistem digital yang terus bertumbuh. Dari website dan toko online sampai sistem internal, semuanya dirancang agar proses pemesanan lebih mudah, lebih transparan, dan lebih andal.",
-    en: "Behind every AYRES product is a growing digital ecosystem. From websites and online storefronts to internal systems, everything is designed to make the ordering process easier, more transparent, and more reliable.",
+    id: "Maka kami membangunnya sendiri — AI agent yang menjalankan campaign marketing dan konten media sosial, toko online untuk order jersey custom, chatbot yang melayani pelanggan 24/7, sampai CRM yang mengawal produksi dari permintaan hingga pengiriman.",
+    en: "So we built our own — AI agents that run marketing campaigns and social media content, an online shop for custom jersey orders, a chatbot that serves customers 24/7, and a CRM that guards production from request to delivery.",
   },
   "about.p4": {
-    id: "Dengan pengalaman melayani ribuan tim dan memproduksi puluhan ribu jersey, AYRES terus tumbuh sebagai brand yang menjunjung kualitas, deadline terjamin, tanpa minimum order, dan harga yang jelas sejak awal.",
-    en: "With experience serving thousands of teams and producing tens of thousands of jerseys, AYRES continues to grow as a brand that stands for quality, guaranteed deadlines, no minimum order, and clear pricing from the very beginning.",
+    id: "Hasilnya: lebih dari 2.600 tim terlayani dan puluhan ribu jersey terkirim — ditemukan lewat campaign digital kami, memesan lewat web kami, dan kembali lagi karena kualitas serta deadline yang terjamin.",
+    en: "The result: more than 2,600 teams served and tens of thousands of jerseys shipped — discovered through our digital campaigns, ordered through our web, and coming back thanks to guaranteed quality and deadlines.",
   },
   "about.p5": {
-    id: "Website ini adalah portofolio digital AYRES. Di sini kami menampilkan platform, sistem, dan produk web yang kami rancang dan bangun untuk mendukung pertumbuhan brand, memperkuat operasional bisnis, dan memberikan pengalaman yang lebih baik untuk setiap pelanggan AYRES.",
-    en: "This website is AYRES’ digital portfolio. Here, we showcase the platforms, systems, and web products we have designed and built to support the brand’s growth, strengthen business operations, and deliver a better experience for every AYRES customer.",
+    id: "Website ini adalah etalase dari ekosistem web tersebut. Jelajahi platform, sistem, dan AI agent yang kami rancang dan bangun sendiri untuk mengoptimalkan penjualan AYRES — dan lihat bagaimana bisnis sportswear bisa berjalan sepenuhnya di atas web.",
+    en: "This website is the showroom for that web ecosystem. Explore the platforms, systems and AI agents we designed and built ourselves to optimize AYRES's sales — and see how a sportswear business can run entirely on the web.",
   },
   "stats.teams": { id: "Tim Terlayani", en: "Teams Served" },
   "stats.jerseys": { id: "Jersey Diproduksi", en: "Jerseys Produced" },
   "stats.sports": { id: "Cabang Olahraga", en: "Sports Covered" },
   "stats.minOrder": { id: "Minimum Order", en: "Minimum Order" },
-  "feat1.title": { id: "Teknologi Pattern Lab", en: "Pattern Lab Technology" },
+  "feat1.title": { id: "AI Marketing Agents", en: "AI Marketing Agents" },
   "feat1.text": {
-    id: "Pola buatan sendiri untuk fit yang presisi dan konsisten.",
-    en: "In-house patterns for a precise, consistent fit.",
+    id: "Campaign dan konten media sosial dijalankan AI agent buatan kami.",
+    en: "Campaigns and social content run by AI agents we built.",
   },
-  "feat2.title": { id: "Deadline Terjamin", en: "Guaranteed Deadlines" },
+  "feat2.title": { id: "Online Shop 24/7", en: "Online Shop 24/7" },
   "feat2.text": {
-    id: "Timeline jelas, jersey tim Anda tiba tepat waktu.",
-    en: "Clear timelines, so your kit arrives right on time.",
+    id: "Order jersey custom kapan pun lewat web shop kami — tanpa antre admin.",
+    en: "Order custom jerseys anytime on our web shop — no waiting on an admin.",
   },
-  "feat3.title": { id: "Harga Transparan", en: "Transparent Pricing" },
+  "feat3.title": { id: "Chatbot CS 24/7", en: "24/7 Support Chatbot" },
   "feat3.text": {
-    id: "Harga jujur di awal — tanpa biaya tersembunyi.",
-    en: "Honest prices up front — no setup or hidden fees.",
+    id: "Chatbot kami menjawab pertanyaan dan menangani order, bahkan jam 2 pagi.",
+    en: "Our chatbot answers questions and takes orders, even at 2 a.m.",
   },
-  "feat4.title": { id: "Asli Indonesia", en: "Authentically Indonesian" },
+  "feat4.title": { id: "CRM Produksi", en: "Production CRM" },
   "feat4.text": {
-    id: "Didesain dan diproduksi di Yogyakarta.",
-    en: "Designed and produced in Yogyakarta.",
+    id: "Setiap order terlacak dari permintaan sampai pengiriman — deadline terjamin.",
+    en: "Every order tracked from request to delivery — deadlines guaranteed.",
   },
 
   // --- projects section ---
   "projects.intro": {
-    id: "Kumpulan platform web, tools, dan sistem AI yang kami rancang dan bangun untuk mendukung brand dan bisnis AYRES.",
-    en: "A growing stack of web platforms, tools and AI systems we have designed and built to power the AYRES brand and business.",
+    id: "Inilah aplikasi-aplikasi yang menjalankan penjualan AYRES — platform web, tools, dan sistem AI yang kami rancang dan bangun sendiri.",
+    en: "These are the apps that run AYRES's sales — web platforms, tools and AI systems we designed and built ourselves.",
   },
   "proj.cta": { id: "LIHAT FLOW →", en: "VIEW FLOW →" },
   "more.show": { id: "Tampilkan Lagi", en: "Show More" },
@@ -145,8 +145,8 @@ const STRINGS: Record<string, { id: string; en: string }> = {
 
   // --- footer ---
   "footer.tagline": {
-    id: "Rumah bagi Jersey Custom Asli Indonesia. A cut above.",
-    en: "Home of Authentically Indonesian Custom Jerseys. A cut above.",
+    id: "Sportswear Indonesia, dijual dan di-scale lewat aplikasi web buatan kami sendiri. A cut above.",
+    en: "Indonesian sportswear, sold and scaled by web apps we built ourselves. A cut above.",
   },
   "footer.menu": { id: "MENU", en: "MENU" },
   "footer.connect": { id: "TERHUBUNG", en: "CONNECT" },
@@ -159,12 +159,38 @@ const STRINGS: Record<string, { id: string; en: string }> = {
 
   // --- project detail page ---
   "detail.back": { id: "← Projects", en: "← Projects" },
-  "detail.loading": { id: "Memuat flow…", en: "Loading flow…" },
-  "detail.kicker": { id: "RINGKASAN WEB FLOW", en: "WEB FLOW OVERVIEW" },
-  "detail.flows": { id: "alur", en: "flows" },
-  "detail.about": { id: "TENTANG PROJECT", en: "ABOUT THE PROJECT" },
-  "detail.diagram": { id: "FLOW DIAGRAM", en: "FLOW DIAGRAM" },
-  "detail.expand": { id: "⛶ PERBESAR", en: "⛶ EXPAND" },
+  "detail.loading": { id: "Memuat…", en: "Loading…" },
+  "detail.problem": { id: "MASALAHNYA", en: "THE PROBLEM" },
+  "detail.problemTitle": {
+    id: "Yang bikin repot selama ini",
+    en: "What kept going wrong",
+  },
+  "detail.solution": { id: "SOLUSINYA", en: "THE SOLUTION" },
+  "detail.solutionTitle": {
+    id: "Cara kami menjawabnya",
+    en: "How we answered it",
+  },
+  "detail.live": { id: "SIMULASI LIVE — gerakkan kursor", en: "LIVE DEMO — move your cursor" },
+  "detail.how": { id: "CARA KERJANYA", en: "HOW IT WORKS" },
+  "detail.howTitle": {
+    id: "Dari awal sampai selesai",
+    en: "From start to finish",
+  },
+  "detail.edge": { id: "YANG BIKIN BEDA", en: "WHAT SETS IT APART" },
+  "detail.edgeTitle": {
+    id: "Bukan template pasaran",
+    en: "Not an off-the-shelf template",
+  },
+  "detail.impact": { id: "DAMPAKNYA", en: "THE IMPACT" },
+  "detail.impactTitle": {
+    id: "Yang berubah untuk bisnis",
+    en: "What changes for the business",
+  },
+  "detail.ctaLine": {
+    id: "Mau sistem seperti ini untuk bisnis Anda?",
+    en: "Want a system like this for your business?",
+  },
+  "detail.ctaBtn": { id: "Ngobrol via WhatsApp", en: "Chat on WhatsApp" },
   "detail.backBtn": {
     id: "← Kembali ke Projects",
     en: "← Back to Projects",
@@ -173,10 +199,10 @@ const STRINGS: Record<string, { id: string; en: string }> = {
     id: "AYRES — portofolio digital",
     en: "AYRES — digital portfolio",
   },
-  "detail.nfTitle": { id: "Flow tidak ditemukan", en: "Flow not found" },
+  "detail.nfTitle": { id: "Project tidak ditemukan", en: "Project not found" },
   "detail.nfMsg": {
-    id: "Tidak ada dokumen flow untuk project ini. Kembali dan pilih project lain.",
-    en: "No flow doc for this project. Head back and pick a project.",
+    id: "Tidak ada data untuk project ini. Kembali dan pilih project lain.",
+    en: "No data for this project. Head back and pick another.",
   },
 };
 

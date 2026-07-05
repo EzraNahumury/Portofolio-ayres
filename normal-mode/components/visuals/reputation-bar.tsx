@@ -3,10 +3,10 @@
 import { useEffect, useRef } from "react";
 
 const TIERS = [
-  { name: "STANDARD", max: 250, hue: 28 },
-  { name: "VERIFIED", max: 500, hue: 220 },
-  { name: "PREMIUM", max: 750, hue: 44 },
-  { name: "CERTIFIED", max: 1000, hue: 200 },
+  { name: "VISITOR", max: 250, hue: 28 },
+  { name: "LEAD", max: 500, hue: 220 },
+  { name: "ORDER", max: 750, hue: 44 },
+  { name: "REPEAT", max: 1000, hue: 200 },
 ];
 
 const TARGET = 812;
@@ -74,7 +74,7 @@ export function ReputationBar() {
 
       ctx!.fillStyle = "rgba(201, 211, 207, 0.55)";
       ctx!.font = "500 10px ui-monospace, SFMono-Regular, Menlo, monospace";
-      ctx!.fillText("/ 1000 · QUALITY SCORE", W / 2, H * 0.42 + 16);
+      ctx!.fillText("/ 1000 · SALES ENGINE SCORE", W / 2, H * 0.42 + 16);
 
       // Bar
       const barY = H * 0.66;

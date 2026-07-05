@@ -1,9 +1,8 @@
 import "../main.css";
 import "./detail.css";
-import mermaid from "mermaid";
-import { marked } from "marked";
-import flows from "./flows.json";
 import { initI18n, t, getLang } from "../i18n";
+import { PROJECTS, type Project, type LStr } from "./projects";
+import { mountVisual } from "./visual";
 
 // Arriving from the dark "Normal Mode" landing page (?theme=dark) should not
 // dump the visitor into the retro peach page — keep it dark all the way
@@ -11,18 +10,20 @@ import { initI18n, t, getLang } from "../i18n";
 const isDarkMode = new URLSearchParams(location.search).get("theme") === "dark";
 
 // "Back to projects" must return wherever the visitor actually came from:
-// the retro homepage's #projects, or Normal Mode's own project showcase
-// (#capabilities) — never hardcoded to the retro path regardless of theme.
+// Normal Mode's own showcase (#capabilities) when dark, or the retro
+// homepage's #projects when light. The retro link carries ?retro=1 because
+// the homepage now boots into the Normal Mode overlay by default — the flag
+// tells it to skip the overlay and land on the retro page itself.
 const backHref = isDarkMode
   ? "/normal-mode/index.html#capabilities"
-  : "/#projects";
+  : "/?retro=1#projects";
 
 if (isDarkMode) {
   document.documentElement.setAttribute("data-theme", "dark");
 
-  // Normal Mode sets all its card/heading/body copy in Space Grotesk (its
-  // --font-tech). Load it only on this path so the retro/light page never
-  // pays for a font it doesn't use.
+  // Normal Mode sets all its copy in Space Grotesk (its --font-tech). Load it
+  // only on this path so the retro/light page never pays for a font it
+  // doesn't use.
   const preconnect1 = document.createElement("link");
   preconnect1.rel = "preconnect";
   preconnect1.href = "https://fonts.googleapis.com";
@@ -36,9 +37,6 @@ if (isDarkMode) {
     "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap";
   document.head.append(preconnect1, preconnect2, fontLink);
 
-  // The top-nav "← Projects" link is static markup in project.html (already
-  // in the DOM before this script runs) — repoint it here rather than
-  // hardcoding two conflicting hrefs in the HTML.
   const navBack = document.querySelector<HTMLAnchorElement>(".dn-back");
   if (navBack) navBack.href = backHref;
 }
@@ -47,10 +45,22 @@ const prefersReducedMotion =
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// Hero content (tag/title/blurb/kicker) is always above the fold, so it
-// reveals immediately on render rather than waiting for a scroll trigger.
-// The double rAF ensures the browser paints the opacity:0 starting state
-// before the class flip, so the transition actually animates.
+const WA = "https://wa.me/6287818310416";
+
+const lang = () => getLang();
+const pick = (s: LStr): string => (lang() === "en" ? s.en : s.id);
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/* ------------------------------- reveals ------------------------------- */
+
+// Above-the-fold hero reveals immediately; the double rAF paints the
+// opacity:0 start state before flipping so the transition actually runs.
 function revealHeroChildren(container: Element) {
   const els = Array.from(container.children) as HTMLElement[];
   els.forEach((el, i) => {
@@ -62,23 +72,13 @@ function revealHeroChildren(container: Element) {
     return;
   }
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      els.forEach((el) => el.classList.add("is-visible"));
-    });
+    requestAnimationFrame(() => els.forEach((el) => el.classList.add("is-visible")));
   });
 }
 
-// Below-the-fold sections (flow blocks, the closing "back to overview" link)
-// cascade in as they're scrolled into view, each unobserved once revealed so
-// the effect only ever plays once per visit.
-//
-// threshold must stay 0 (fire as soon as a single pixel is visible), not a
-// proportion: flow blocks can contain several stacked diagrams several
-// hundred to 1000+px tall each, so a block can easily run to 3000-6000px
-// tall. A proportional threshold like 0.12 would require ~600px+ of it
-// visible at once just to cross 12% — a window most normal scrolling never
-// hits, so the block (and its diagram) would stay stuck at opacity:0
-// forever, i.e. silently "disappear".
+// Below-the-fold elements cascade in as scrolled into view; each unobserved
+// once revealed so the effect plays once. threshold 0 (any pixel) so tall
+// blocks never stay stuck invisible.
 function revealOnScroll(elements: HTMLElement[]) {
   if (elements.length === 0) return;
   if (prefersReducedMotion) {
@@ -93,80 +93,18 @@ function revealOnScroll(elements: HTMLElement[]) {
         io.unobserve(entry.target);
       }
     },
-    { threshold: 0, rootMargin: "0px 0px -40px 0px" },
+    { threshold: 0, rootMargin: "0px 0px -50px 0px" },
   );
-  elements.forEach((el, i) => {
+  elements.forEach((el) => {
     el.classList.add("reveal");
-    el.style.transitionDelay = `${Math.min(i, 3) * 0.06}s`;
     io.observe(el);
   });
-
-  // Safety net: content must never stay permanently invisible because of an
-  // observer edge case (unusual scroll pattern, viewport quirk, etc.) — force
-  // anything still unrevealed into view after a few seconds.
+  // Safety net: never leave content permanently invisible.
   setTimeout(() => {
     elements.forEach((el) => el.classList.add("is-visible"));
     io.disconnect();
-  }, 4000);
+  }, 4500);
 }
-
-type Section = { title: string; body: string };
-type Project = {
-  title: string;
-  tag: string;
-  blurb: string;
-  desc: string;
-  descEn: string;
-  sections: Section[];
-};
-
-const pickDesc = (p: Project): string =>
-  getLang() === "en" ? p.descEn || p.desc : p.desc || p.descEn;
-
-// Short card blurb: English lives in flows.json, Indonesian in the i18n
-// dictionary (same string the homepage cards use).
-function pickBlurb(slug: string, p: Project): string {
-  if (getLang() === "en") return p.blurb;
-  const localized = t(`proj.${slug}.desc`);
-  return localized === `proj.${slug}.desc` ? p.blurb : localized;
-}
-
-const DB = flows as unknown as Record<string, Project>;
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
-// Mermaid sources collected during markdown parsing; rendered afterwards via
-// mermaid.render() into clean <div>s. Rendering inside <pre> (mermaid.run's
-// default flow) leaks pre/white-space styling into the HTML labels and breaks
-// mermaid's text measurement — that's what inflated the diamond shapes.
-let diagramSources: string[] = [];
-
-const renderer = new marked.Renderer();
-renderer.code = ({ text, lang }: { text: string; lang?: string }): string => {
-  if ((lang || "").trim().toLowerCase() === "mermaid") {
-    const idx = diagramSources.push(text) - 1;
-    return `
-      <figure class="flow-diagram" data-mid="${idx}">
-        <figcaption class="fd-bar">
-          <span class="fd-label" data-i18n="detail.diagram">${t(
-            "detail.diagram",
-          )}</span>
-          <button class="fd-expand" type="button" data-i18n="detail.expand">${t(
-            "detail.expand",
-          )}</button>
-        </figcaption>
-        <div class="fd-scroll"><div class="fd-canvas"><span class="fd-loading">rendering&hellip;</span></div></div>
-      </figure>`;
-  }
-  return `<pre class="flow-code"><code>${escapeHtml(text)}</code></pre>`;
-};
-
-marked.use({ renderer });
 
 const root = document.getElementById("detail-root")!;
 
@@ -186,314 +124,285 @@ function renderNotFound(slug: string) {
   revealHeroChildren(root.querySelector(".detail-hero")!);
 }
 
-/* ---------------- fullscreen diagram overlay with zoom ---------------- */
+/* ---------------------------- section markup --------------------------- */
 
-function svgNaturalWidth(svgEl: SVGSVGElement): number {
-  const vb = svgEl.getAttribute("viewBox");
-  if (vb) {
-    const parts = vb.split(/[\s,]+/).map(Number);
-    if (parts.length === 4 && parts[2] > 0) return parts[2];
-  }
-  const w = parseFloat(svgEl.getAttribute("width") || "");
-  return Number.isFinite(w) && w > 0 ? w : 800;
+function stepsMarkup(p: Project): string {
+  const rows = p.steps
+    .map(
+      (s, i) => `
+      <li class="fw-step">
+        <span class="fw-step-node">${String(i + 1).padStart(2, "0")}</span>
+        <div class="fw-step-body">
+          <h3 class="fw-step-title">${escapeHtml(pick(s.title))}</h3>
+          <p class="fw-step-text">${escapeHtml(pick(s.body))}</p>
+        </div>
+      </li>`,
+    )
+    .join("");
+  return `
+    <section class="det-section fw-section">
+      <div class="det-head">
+        <span class="det-eyebrow" data-i18n="detail.how">${t("detail.how")}</span>
+        <h2 class="det-h2" data-i18n="detail.howTitle">${t("detail.howTitle")}</h2>
+      </div>
+      <ol class="fw-steps">${rows}</ol>
+    </section>`;
 }
 
-function openOverlay(svgHtml: string, title: string) {
-  const overlay = document.createElement("div");
-  overlay.className = "fd-overlay";
-  overlay.innerHTML = `
-    <div class="fdo-bar">
-      <span class="fdo-title">${escapeHtml(title)}</span>
-      <span class="fdo-controls">
-        <button type="button" class="fdo-btn" data-act="out" title="Perkecil">&minus;</button>
-        <span class="fdo-zoom">100%</span>
-        <button type="button" class="fdo-btn" data-act="in" title="Perbesar">+</button>
-        <button type="button" class="fdo-btn" data-act="reset" title="Reset">1:1</button>
-        <button type="button" class="fdo-btn fdo-close" data-act="close" title="Tutup">&#x2715;</button>
-      </span>
-    </div>
-    <div class="fdo-body"><div class="fdo-canvas">${svgHtml}</div></div>`;
-  document.body.appendChild(overlay);
-  document.body.classList.add("fd-lock");
+function featuresMarkup(p: Project): string {
+  const cards = p.features
+    .map(
+      (f, i) => `
+      <article class="feat-card" style="--fi:${i}">
+        <span class="feat-idx">${String(i + 1).padStart(2, "0")}</span>
+        <h3 class="feat-title">${escapeHtml(pick(f.title))}</h3>
+        <p class="feat-text">${escapeHtml(pick(f.body))}</p>
+      </article>`,
+    )
+    .join("");
+  return `
+    <section class="det-section feat-section">
+      <div class="det-head">
+        <span class="det-eyebrow" data-i18n="detail.edge">${t("detail.edge")}</span>
+        <h2 class="det-h2" data-i18n="detail.edgeTitle">${t("detail.edgeTitle")}</h2>
+      </div>
+      <div class="feat-grid">${cards}</div>
+    </section>`;
+}
 
-  if (prefersReducedMotion) {
-    overlay.classList.add("is-open");
-  } else {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => overlay.classList.add("is-open"));
-    });
+function resultsMarkup(p: Project): string {
+  const items = p.results
+    .map(
+      (r) => `
+      <li class="res-item">
+        <span class="res-check" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" pathLength="1"/></svg>
+        </span>
+        <span class="res-text">${escapeHtml(pick(r))}</span>
+      </li>`,
+    )
+    .join("");
+  return `
+    <section class="det-section res-section">
+      <div class="det-head">
+        <span class="det-eyebrow" data-i18n="detail.impact">${t("detail.impact")}</span>
+        <h2 class="det-h2" data-i18n="detail.impactTitle">${t("detail.impactTitle")}</h2>
+      </div>
+      <ul class="res-list">${items}</ul>
+      <div class="res-cta">
+        <p class="res-cta-line" data-i18n="detail.ctaLine">${t("detail.ctaLine")}</p>
+        <a class="res-cta-btn" href="${WA}" target="_blank" rel="noopener">
+          <span data-i18n="detail.ctaBtn">${t("detail.ctaBtn")}</span>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+        </a>
+      </div>
+    </section>`;
+}
+
+/* ------------------------- interactive touches ------------------------- */
+
+// Thin progress bar at the very top that fills as the page scrolls.
+function setupProgressBar() {
+  let bar = document.getElementById("det-progress");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.id = "det-progress";
+    bar.setAttribute("aria-hidden", "true");
+    document.body.appendChild(bar);
   }
-
-  const svgEl = overlay.querySelector<SVGSVGElement>(".fdo-canvas svg");
-  const zoomLabel = overlay.querySelector(".fdo-zoom")!;
-  const base = svgEl ? svgNaturalWidth(svgEl) : 800;
-  let z = 1;
-
-  const apply = () => {
-    if (svgEl) {
-      svgEl.style.width = `${Math.round(base * z)}px`;
-      svgEl.style.maxWidth = "none";
-      svgEl.style.height = "auto";
-    }
-    zoomLabel.textContent = `${Math.round(z * 100)}%`;
+  const update = () => {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight || 1;
+    bar!.style.transform = `scaleX(${Math.min(1, window.scrollY / max)})`;
   };
-  apply();
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update, { passive: true });
+  update();
+}
 
-  let closed = false;
-  const close = () => {
-    if (closed) return;
-    closed = true;
-    document.removeEventListener("keydown", onKey);
-    if (prefersReducedMotion) {
-      document.body.classList.remove("fd-lock");
-      overlay.remove();
-      return;
-    }
-    overlay.classList.remove("is-open");
-    const finish = () => {
-      document.body.classList.remove("fd-lock");
-      overlay.remove();
-    };
-    overlay.addEventListener("transitionend", finish, { once: true });
-    setTimeout(finish, 300); // safety net if transitionend never fires
-  };
-  const onKey = (e: KeyboardEvent) => {
-    if (e.key === "Escape") close();
-    if (e.key === "+" || e.key === "=") { z = Math.min(3, z + 0.2); apply(); }
-    if (e.key === "-") { z = Math.max(0.4, z - 0.2); apply(); }
-  };
-  document.addEventListener("keydown", onKey);
-
-  overlay.addEventListener("click", (e) => {
-    const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-act]");
-    if (!btn) {
-      if (e.target === overlay) close();
-      return;
-    }
-    const act = btn.dataset.act;
-    if (act === "in") z = Math.min(3, z + 0.2);
-    else if (act === "out") z = Math.max(0.4, z - 0.2);
-    else if (act === "reset") z = 1;
-    else if (act === "close") return close();
-    apply();
+// 3D tilt on the screenshot window, following the cursor. The idle floating
+// bob animates the separate `translate` property, so both can run together.
+// Skipped on touch devices and under reduced motion.
+function setupShotTilt() {
+  const shot = root.querySelector<HTMLElement>(".shot");
+  if (!shot) return;
+  if (prefersReducedMotion || !window.matchMedia("(pointer: fine)").matches)
+    return;
+  shot.classList.add("has-tilt");
+  shot.addEventListener("pointermove", (e) => {
+    const r = shot.getBoundingClientRect();
+    const kx = (e.clientX - r.left) / r.width - 0.5; // -0.5..0.5
+    const ky = (e.clientY - r.top) / r.height - 0.5;
+    shot.style.transform = `perspective(950px) rotateY(${(kx * 5).toFixed(
+      2,
+    )}deg) rotateX(${(-ky * 4).toFixed(2)}deg)`;
+  });
+  shot.addEventListener("pointerleave", () => {
+    shot.style.transform = "perspective(950px) rotateY(0deg) rotateX(0deg)";
   });
 }
 
-/* --------------------------- page rendering --------------------------- */
+// Radial glow that follows the cursor across each feature card.
+function setupCardGlow() {
+  root.querySelectorAll<HTMLElement>(".feat-card").forEach((card) => {
+    card.addEventListener("pointermove", (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      card.style.setProperty("--my", `${e.clientY - r.top}px`);
+    });
+  });
+}
 
-async function render() {
+// Track which timeline step is closest to the viewport centre: it gets
+// .is-active (pulsing node), everything above it .is-passed (filled node).
+function setupStepTracking() {
+  const steps = Array.from(root.querySelectorAll<HTMLElement>(".fw-step"));
+  if (steps.length === 0) return;
+  if (prefersReducedMotion) {
+    steps.forEach((s) => s.classList.add("is-passed"));
+    return;
+  }
+  let ticking = false;
+  const update = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const mid = (window.innerHeight || 1) * 0.55;
+      let active = -1;
+      steps.forEach((s, i) => {
+        if (s.getBoundingClientRect().top < mid) active = i;
+      });
+      steps.forEach((s, i) => {
+        s.classList.toggle("is-active", i === active);
+        s.classList.toggle("is-passed", i < active);
+      });
+      ticking = false;
+    });
+  };
+  window.addEventListener("scroll", update, { passive: true });
+  update();
+}
+
+// Floating mini-CTA bar: appears once the visitor is past the first screen,
+// disappears while the main CTA block is already in view.
+function setupStickyCta() {
+  const bar = root.querySelector<HTMLElement>(".sticky-cta");
+  const mainCta = root.querySelector<HTMLElement>(".res-cta");
+  if (!bar) return;
+  let mainCtaVisible = false;
+  if (mainCta && "IntersectionObserver" in window) {
+    new IntersectionObserver(
+      (entries) => {
+        mainCtaVisible = entries[0]?.isIntersecting ?? false;
+        update();
+      },
+      { threshold: 0 },
+    ).observe(mainCta);
+  }
+  const update = () => {
+    const past = window.scrollY > (window.innerHeight || 800) * 0.9;
+    bar.classList.toggle("is-shown", past && !mainCtaVisible);
+  };
+  window.addEventListener("scroll", update, { passive: true });
+  update();
+}
+
+function render() {
   const slug = new URLSearchParams(location.search).get("p") || "";
-  const p = DB[slug];
+  const p = PROJECTS[slug];
   if (!p) return renderNotFound(slug);
 
-  document.title = `${p.title} — Flow — Ayres`;
-  diagramSources = [];
-
-  const sectionsHtml = p.sections
-    .map((s, i) => {
-      const num = String(i + 1).padStart(2, "0");
-      return `
-      <section class="flow-block" data-num="${num}">
-        <h2 class="flow-title"><span class="ft-num">${num}</span>${escapeHtml(
-          s.title,
-        )}</h2>
-        <div class="flow-body">${marked.parse(s.body) as string}</div>
-      </section>`;
-    })
-    .join("");
-
-  // "00" — what this project is, before diving into the flows
-  const introHtml = `
-      <section class="flow-block flow-intro" data-num="00">
-        <h2 class="flow-title"><span class="ft-num">00</span>${escapeHtml(
-          p.title,
-        )}</h2>
-        <div class="flow-body">
-          <p class="fi-label" data-i18n="detail.about">${t("detail.about")}</p>
-          <p class="fi-desc">${escapeHtml(pickDesc(p))}</p>
-        </div>
-      </section>`;
+  document.title = `${p.title} — Ayres`;
 
   root.innerHTML = `
     <div class="detail-hero">
       <p class="dh-tag">${escapeHtml(p.tag)}</p>
-      <h1 class="dh-title">${escapeHtml(p.title)}</h1>
-      <p class="dh-blurb">${escapeHtml(pickBlurb(slug, p))}</p>
-      <p class="dh-kicker"><span data-i18n="detail.kicker">${t(
-        "detail.kicker",
-      )}</span> &mdash; ${p.sections.length} <span data-i18n="detail.flows">${t(
-        "detail.flows",
-      )}</span></p>
+      <h1 class="dh-title reveal-boot">${escapeHtml(p.title)}</h1>
+      <p class="dh-tagline">${escapeHtml(pick(p.tagline))}</p>
     </div>
-    <div class="flow-list">${introHtml}${sectionsHtml}</div>
+
+    <figure class="shot">
+      <div class="shot-bar">
+        <span class="shot-dot"></span><span class="shot-dot"></span><span class="shot-dot"></span>
+        <span class="shot-url">ayres://${escapeHtml(slug)}</span>
+        <span class="shot-live" data-i18n="detail.live">${t("detail.live")}</span>
+      </div>
+      <div class="shot-frame" id="shot-canvas"></div>
+    </figure>
+
+    <section class="det-section intro-section">
+      <p class="intro-lead">${escapeHtml(pick(p.intro))}</p>
+    </section>
+
+    <section class="det-section ps-section">
+      <div class="ps-grid">
+        <article class="ps-card ps-problem">
+          <span class="ps-eyebrow" data-i18n="detail.problem">${t(
+            "detail.problem",
+          )}</span>
+          <h2 class="ps-title" data-i18n="detail.problemTitle">${t(
+            "detail.problemTitle",
+          )}</h2>
+          <p class="ps-text">${escapeHtml(pick(p.problem))}</p>
+        </article>
+        <div class="ps-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <article class="ps-card ps-solution">
+          <span class="ps-eyebrow" data-i18n="detail.solution">${t(
+            "detail.solution",
+          )}</span>
+          <h2 class="ps-title" data-i18n="detail.solutionTitle">${t(
+            "detail.solutionTitle",
+          )}</h2>
+          <p class="ps-text">${escapeHtml(pick(p.solution))}</p>
+        </article>
+      </div>
+    </section>
+
+    ${stepsMarkup(p)}
+    ${featuresMarkup(p)}
+    ${resultsMarkup(p)}
+
     <div class="detail-more">
       <a class="dh-back-btn" href="${backHref}" data-i18n="detail.backBtn">${t(
         "detail.backBtn",
       )}</a>
+    </div>
+
+    <div class="sticky-cta" aria-hidden="true">
+      <span class="sc-text" data-i18n="detail.ctaLine">${t("detail.ctaLine")}</span>
+      <a class="sc-btn" href="${WA}" target="_blank" rel="noopener">
+        <span data-i18n="detail.ctaBtn">${t("detail.ctaBtn")}</span>
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+      </a>
     </div>`;
+
   revealHeroChildren(root.querySelector(".detail-hero")!);
   revealOnScroll(
-    Array.from(root.querySelectorAll<HTMLElement>(".flow-block, .detail-more")),
+    Array.from(
+      root.querySelectorAll<HTMLElement>(
+        ".shot, .det-section, .ps-card, .ps-arrow, .fw-step, .feat-card, .res-item, .res-cta, .detail-more",
+      ),
+    ),
   );
 
-  // Theme tuned to the site palette: warm cream nodes, charcoal actors,
-  // orange accent frames. A parallel dark set (same accent colors, dark
-  // canvas) keeps diagrams legible when arriving from Normal Mode.
-  //
-  // htmlLabels:false — labels are plain SVG <text>, measured with getBBox,
-  // immune to page CSS (fixes the inflated-diamond / mis-placed label bug).
-  // useMaxWidth:false — diagrams render at natural size and scroll inside
-  // their frame instead of being shrunk to unreadable sizes.
-  const lightThemeVariables = {
-    fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-    fontSize: "15px",
-    // generic nodes (flowchart / state / misc)
-    primaryColor: "#fff3e0",
-    primaryBorderColor: "#b25b12",
-    primaryTextColor: "#3b2a18",
-    secondaryColor: "#fbe7cf",
-    secondaryBorderColor: "#8a5a2b",
-    tertiaryColor: "#fdeeda",
-    tertiaryBorderColor: "#8a5a2b",
-    lineColor: "#7a4a1d",
-    textColor: "#3b2a18",
-    // flowchart subgraphs
-    clusterBkg: "#fbe7cf",
-    clusterBorder: "#b25b12",
-    edgeLabelBackground: "#ffe9b0",
-    // sequence diagrams
-    actorBkg: "#525252",
-    actorBorder: "#140f08",
-    actorTextColor: "#f6d4b1",
-    actorLineColor: "#a98963",
-    signalColor: "#5a3d1e",
-    signalTextColor: "#3b2a18",
-    labelBoxBkgColor: "#f99021",
-    labelBoxBorderColor: "#b25b12",
-    labelTextColor: "#140f08",
-    loopTextColor: "#3b2a18",
-    noteBkgColor: "#ffe9b0",
-    noteBorderColor: "#c98a2e",
-    noteTextColor: "#3b2a18",
-    activationBkgColor: "#f6d4b1",
-    activationBorderColor: "#b25b12",
-  };
+  // live animated scene inside the window frame (replaces the old static
+  // screenshot — every project gets its own interactive mini-demo)
+  const canvasHost = root.querySelector<HTMLElement>("#shot-canvas");
+  if (canvasHost) mountVisual(canvasHost, slug);
 
-  // Matches Normal Mode's own palette (near-black surfaces, violet→blue
-  // brand accent) rather than the retro site's amber — so a diagram doesn't
-  // read as a color scheme swap away from the page it's embedded in.
-  const darkThemeVariables = {
-    fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-    fontSize: "15px",
-    // generic nodes (flowchart / state / misc)
-    primaryColor: "#18181c",
-    primaryBorderColor: "#9181f5",
-    primaryTextColor: "#f2f2f5",
-    secondaryColor: "#1c1c22",
-    secondaryBorderColor: "#4361fc",
-    tertiaryColor: "#141418",
-    tertiaryBorderColor: "#407aff",
-    lineColor: "#6b6f8c",
-    textColor: "#f2f2f5",
-    // flowchart subgraphs
-    clusterBkg: "#18181c",
-    clusterBorder: "#9181f5",
-    edgeLabelBackground: "#1c1c22",
-    // sequence diagrams
-    actorBkg: "#18181c",
-    actorBorder: "#9181f5",
-    actorTextColor: "#f2f2f5",
-    actorLineColor: "#4d4f66",
-    signalColor: "#c9d3cf",
-    signalTextColor: "#f2f2f5",
-    labelBoxBkgColor: "#4361fc",
-    labelBoxBorderColor: "#0f0f0f",
-    labelTextColor: "#ffffff",
-    loopTextColor: "#f2f2f5",
-    noteBkgColor: "#1c1c22",
-    noteBorderColor: "#4361fc",
-    noteTextColor: "#f2f2f5",
-    activationBkgColor: "#1c1c22",
-    activationBorderColor: "#9181f5",
-  };
-
-  mermaid.initialize({
-    startOnLoad: false,
-    theme: "base",
-    securityLevel: "loose",
-    fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-    themeVariables: isDarkMode ? darkThemeVariables : lightThemeVariables,
-    flowchart: {
-      curve: "basis",
-      useMaxWidth: false,
-      htmlLabels: false,
-      nodeSpacing: 40,
-      rankSpacing: 46,
-      padding: 10,
-    },
-    sequence: {
-      useMaxWidth: false,
-      mirrorActors: false, // no duplicate actor row at the bottom
-      wrap: true,
-      width: 200, // participant box width — avoids mid-word breaks
-      actorMargin: 50,
-      messageMargin: 36,
-      boxMargin: 10,
-      noteMargin: 10,
-    },
-    state: {
-      useMaxWidth: false,
-    },
-  });
-
-  // Render each diagram into its frame; a failed diagram falls back to its
-  // source instead of taking down the rest of the page.
-  const figures = root.querySelectorAll<HTMLElement>(".flow-diagram");
-  for (const fig of figures) {
-    const idx = Number(fig.dataset.mid);
-    const src = diagramSources[idx] ?? "";
-    const canvas = fig.querySelector<HTMLElement>(".fd-canvas")!;
-    try {
-      const { svg } = await mermaid.render(`mmd-${slug}-${idx}`, src);
-      canvas.innerHTML = svg;
-      const svgEl = canvas.querySelector<SVGSVGElement>("svg");
-      if (svgEl) {
-        // if the diagram is narrower than the frame it just centers;
-        // wider ones scroll horizontally at readable size
-        svgEl.style.maxWidth = "none";
-        svgEl.style.height = "auto";
-      }
-      const btn = fig.querySelector<HTMLButtonElement>(".fd-expand");
-      const titleEl = fig.closest(".flow-block")?.querySelector(".flow-title");
-      const numTxt = titleEl?.querySelector(".ft-num")?.textContent?.trim() ?? "";
-      const rawTitle = (titleEl?.textContent ?? p.title).trim();
-      const overlayTitle =
-        numTxt && rawTitle.startsWith(numTxt)
-          ? `${numTxt} — ${rawTitle.slice(numTxt.length).trim()}`
-          : rawTitle;
-      btn?.addEventListener("click", () => openOverlay(svg, overlayTitle));
-      requestAnimationFrame(() => canvas.classList.add("is-rendered"));
-    } catch {
-      canvas.innerHTML = `<pre class="flow-code"><code>${escapeHtml(
-        src,
-      )}</code></pre>`;
-      fig.querySelector(".fd-expand")?.remove();
-      canvas.classList.add("is-rendered");
-    }
-  }
+  setupProgressBar();
+  setupShotTilt();
+  setupCardGlow();
+  setupStepTracking();
+  setupStickyCta();
 }
 
 initI18n();
 render();
 
-// Language toggle: data-i18n elements are swapped by applyI18n(); the project
-// description is per-project data, so swap it here.
+// Language toggle re-renders the whole page so every project string swaps.
 document.addEventListener("langchange", () => {
-  const slug = new URLSearchParams(location.search).get("p") || "";
-  const p = DB[slug];
-  if (!p) return;
-  const descEl = root.querySelector<HTMLElement>(".fi-desc");
-  if (descEl) descEl.textContent = pickDesc(p);
-  const blurbEl = root.querySelector<HTMLElement>(".dh-blurb");
-  if (blurbEl) blurbEl.textContent = pickBlurb(slug, p);
+  render();
 });

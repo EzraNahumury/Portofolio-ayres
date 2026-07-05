@@ -5,10 +5,26 @@ import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import { ArrowUpRight, Plus } from "lucide-react";
 import { gsap, registerGsap } from "@/lib/gsap";
-import { hero } from "@/lib/content";
+import { hero as heroEn } from "@/lib/content";
+import { heroId } from "@/lib/content-id";
+import { useLang } from "@/lib/lang";
 import { cn } from "@/lib/cn";
 
+const COPY = {
+  en: {
+    title: "Ready for a cut above?",
+    body: "Join 2,600+ teams who order from AYRES — they found us through our AI-run campaigns, ordered on our own web shop, and got answers from our chatbot at 2 a.m. Sportswear this good deserves software this good.",
+  },
+  id: {
+    title: "Siap naik kelas?",
+    body: "Bergabunglah dengan 2.600+ tim yang order dari AYRES — mereka menemukan kami lewat campaign yang dijalankan AI, memesan di web shop kami sendiri, dan dijawab chatbot kami jam 2 pagi. Sportswear sebagus ini pantas ditemani software sebagus ini.",
+  },
+};
+
 export function StartCTA() {
+  const { lang } = useLang();
+  const copy = COPY[lang];
+  const hero = lang === "en" ? heroEn : { ...heroEn, ...heroId };
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -60,7 +76,7 @@ export function StartCTA() {
                   "var(--font-geist-sans), ui-sans-serif, system-ui",
               }}
             >
-              Ready for a cut above?
+              {copy.title}
             </h3>
 
             <div className="mt-6 flex max-w-md items-start gap-3 text-sm leading-relaxed text-fg-muted sm:text-[15px]">
@@ -71,10 +87,7 @@ export function StartCTA() {
                     "var(--font-tech), ui-sans-serif, system-ui",
                 }}
               >
-                Join 2,600+ teams who trust AYRES for authentically Indonesian
-                custom jerseys — with Pattern Lab precision, guaranteed
-                deadlines, and transparent pricing from the very first
-                message.
+                {copy.body}
               </p>
             </div>
 

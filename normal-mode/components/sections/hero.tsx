@@ -5,10 +5,14 @@ import { ArrowUpRight, Plus } from "lucide-react";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import { gsap, registerGsap } from "@/lib/gsap";
-import { hero } from "@/lib/content";
+import { hero as heroEn } from "@/lib/content";
+import { heroId } from "@/lib/content-id";
+import { useLang } from "@/lib/lang";
 import { cn } from "@/lib/cn";
 
 export function Hero() {
+  const { lang } = useLang();
+  const hero = lang === "en" ? heroEn : { ...heroEn, ...heroId };
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(

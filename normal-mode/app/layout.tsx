@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif, Space_Grotesk } from "next/font/google";
 import { LenisProvider } from "@/components/providers/lenis-provider";
+import { LangProvider } from "@/lib/lang";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,12 +30,12 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "Ayres",
   description:
-    "Auralis turns Indonesia's rotating savings tradition into a transparent, AI-governed onchain coordination protocol. Built natively on Portaldot with ink! smart contracts and POT gas.",
-  metadataBase: new URL("https://auralis.dev"),
+    "AYRES is an Indonesian sportswear brand from Yogyakarta — every sale powered by web apps we built ourselves: AI marketing agents, an online shop, a 24/7 chatbot and a production CRM.",
+  metadataBase: new URL("https://ayresapparel.com"),
   openGraph: {
     title: "Ayres",
     description:
-      "Multi-agent reasoning evaluates every withdrawal request; the chain enforces the verdict.",
+      "Indonesian sportswear, sold and scaled by web apps we built ourselves.",
     type: "website",
   },
 };
@@ -54,9 +55,11 @@ export default function RootLayout({
           aria-hidden
           className="pointer-events-none fixed inset-0 z-0 bg-noise opacity-[0.05] mix-blend-overlay"
         />
-        <LenisProvider>
-          <div className="relative z-10">{children}</div>
-        </LenisProvider>
+        <LangProvider>
+          <LenisProvider>
+            <div className="relative z-10">{children}</div>
+          </LenisProvider>
+        </LangProvider>
       </body>
     </html>
   );

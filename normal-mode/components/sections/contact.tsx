@@ -6,29 +6,54 @@ import { useGSAP } from "@gsap/react";
 import { ArrowUpRight, MessageCircle, MapPin, Mail } from "lucide-react";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap";
 import { hero } from "@/lib/content";
+import { useLang } from "@/lib/lang";
 
-const cards = [
-  {
-    icon: MessageCircle,
-    title: "Chat on WhatsApp",
-    body: "0878-1831-0416 — reach us directly for order questions or a quick quote.",
-    href: hero.openApp.href,
-  },
-  {
-    icon: MapPin,
-    title: "Visit Our Workshop",
-    body: "Jl. Wonocatur No.427, Jeruklegi, Banguntapan, D.I. Yogyakarta.",
-    href: "https://www.google.com/maps?ll=-7.806717,110.405682&z=17&t=m&hl=en&gl=ID&mapclient=embed&cid=7178737846643624676",
-  },
-  {
-    icon: Mail,
-    title: "Order & Support",
-    body: "order@ayresapparel.com for new orders, pengaduan@ayresapparel.com for complaints. Open Mon–Sat, 09.00–16.30 WIB.",
-    href: "mailto:order@ayresapparel.com",
-  },
-];
+const CARDS = {
+  en: [
+    {
+      icon: MessageCircle,
+      title: "Chat on WhatsApp",
+      body: "0878-1831-0416 — reach us directly for order questions or a quick quote.",
+      href: hero.openApp.href,
+    },
+    {
+      icon: MapPin,
+      title: "Visit Our Workshop",
+      body: "Jl. Wonocatur No.427, Jeruklegi, Banguntapan, D.I. Yogyakarta.",
+      href: "https://www.google.com/maps?ll=-7.806717,110.405682&z=17&t=m&hl=en&gl=ID&mapclient=embed&cid=7178737846643624676",
+    },
+    {
+      icon: Mail,
+      title: "Order & Support",
+      body: "order@ayresapparel.com for new orders, pengaduan@ayresapparel.com for complaints. Open Mon–Sat, 09.00–16.30 WIB.",
+      href: "mailto:order@ayresapparel.com",
+    },
+  ],
+  id: [
+    {
+      icon: MessageCircle,
+      title: "Chat via WhatsApp",
+      body: "0878-1831-0416 — hubungi kami langsung untuk pertanyaan order atau penawaran cepat.",
+      href: hero.openApp.href,
+    },
+    {
+      icon: MapPin,
+      title: "Kunjungi Workshop Kami",
+      body: "Jl. Wonocatur No.427, Jeruklegi, Banguntapan, D.I. Yogyakarta.",
+      href: "https://www.google.com/maps?ll=-7.806717,110.405682&z=17&t=m&hl=en&gl=ID&mapclient=embed&cid=7178737846643624676",
+    },
+    {
+      icon: Mail,
+      title: "Order & Bantuan",
+      body: "order@ayresapparel.com untuk order baru, pengaduan@ayresapparel.com untuk komplain. Buka Senin–Sabtu, 09.00–16.30 WIB.",
+      href: "mailto:order@ayresapparel.com",
+    },
+  ],
+};
 
 export function Contact() {
+  const { lang } = useLang();
+  const cards = CARDS[lang];
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -144,7 +169,7 @@ export function Contact() {
           }}
         >
           <span className="inline-flex overflow-hidden align-baseline">
-            {"Contact".split("").map((ch, i) => (
+            {(lang === "en" ? "Contact" : "Kontak").split("").map((ch, i) => (
               <span
                 key={i}
                 className="contact-char inline-block will-change-transform"
@@ -162,7 +187,9 @@ export function Contact() {
             rel="noreferrer"
             className="group inline-flex items-center gap-2.5 rounded-full bg-white py-1.5 pl-5 pr-1.5 ring-1 ring-[#0a0a0a]/10 text-[#0a0a0a] shadow-sm transition-all hover:shadow-md hover:ring-[#0a0a0a]/20"
           >
-            <span className="text-sm font-medium">{hero.openApp.label}</span>
+            <span className="text-sm font-medium">
+              {lang === "en" ? "Chat on WhatsApp" : "Chat via WhatsApp"}
+            </span>
             <span
               aria-hidden
               className="grid size-9 place-items-center rounded-full text-white shadow-[0_-4px_8px_rgba(255,255,255,0.25)_inset]"

@@ -1,13 +1,41 @@
 "use client";
 
 import { ArrowUp } from "lucide-react";
+import { useLang } from "@/lib/lang";
 
-const menu = [
-  { label: "Home", href: "#top" },
-  { label: "How It Works", href: "#how" },
-  { label: "Security", href: "#security" },
-  { label: "FAQ", href: "#faq" },
-];
+const MENUS = {
+  en: [
+    { label: "Home", href: "#top" },
+    { label: "How It Works", href: "#how" },
+    { label: "Security", href: "#security" },
+    { label: "FAQ", href: "#faq" },
+  ],
+  id: [
+    { label: "Beranda", href: "#top" },
+    { label: "Cara Kerja", href: "#how" },
+    { label: "Teknologi", href: "#security" },
+    { label: "FAQ", href: "#faq" },
+  ],
+};
+
+const FOOT_COPY = {
+  en: {
+    tagline:
+      "Indonesian sportswear, sold and scaled by web apps we built ourselves. A cut above.",
+    menu: "Menu",
+    connect: "Connect",
+    shop: "Shop",
+    rights: "© 2026 AYRES. All rights reserved.",
+  },
+  id: {
+    tagline:
+      "Sportswear Indonesia, dijual dan di-scale lewat aplikasi web buatan kami sendiri. A cut above.",
+    menu: "Menu",
+    connect: "Terhubung",
+    shop: "Belanja",
+    rights: "© 2026 AYRES. Semua hak dilindungi.",
+  },
+};
 
 const connect = [
   { label: "Instagram", href: "https://instagram.com/ayresapparel" },
@@ -65,6 +93,9 @@ function FooterCol({
 }
 
 export function Footer() {
+  const { lang } = useLang();
+  const menu = MENUS[lang];
+  const copy = FOOT_COPY[lang];
   return (
     <footer className="relative isolate overflow-hidden bg-bg pt-20 sm:pt-24">
       <div className="relative mx-auto max-w-[1400px] px-6 lg:px-10">
@@ -92,13 +123,13 @@ export function Footer() {
               className="max-w-[220px] text-[13px] leading-relaxed text-fg-dim"
               style={{ fontFamily: "var(--font-tech), ui-sans-serif, system-ui" }}
             >
-              Home of Authentically Indonesian Custom Jerseys. A cut above.
+              {copy.tagline}
             </p>
           </div>
 
-          <FooterCol title="Menu" links={menu} />
-          <FooterCol title="Connect" links={connect} />
-          <FooterCol title="Shop" links={shop} />
+          <FooterCol title={copy.menu} links={menu} />
+          <FooterCol title={copy.connect} links={connect} />
+          <FooterCol title={copy.shop} links={shop} />
 
           {/* Back to top button */}
           <button
@@ -112,7 +143,7 @@ export function Footer() {
           >
             <span className="flex items-center gap-3 text-lg font-medium">
               <ArrowUp className="size-5 transition-transform group-hover:-translate-y-0.5" />
-              Back to top
+              {lang === "en" ? "Back to top" : "Kembali ke atas"}
             </span>
           </button>
         </div>
@@ -145,7 +176,7 @@ export function Footer() {
                 "var(--font-tech), ui-sans-serif, system-ui",
             }}
           >
-            © 2026 AYRES. All rights reserved.
+            {copy.rights}
           </p>
         </div>
       </div>

@@ -18,8 +18,8 @@ type Pulse = {
   hue: number;
 };
 
-const DEFAULT_LABELS = ["CUT", "SEW", "PRINT", "FIT", "QC", "PACK"];
-const DEFAULT_CENTER = "PATTERN LAB";
+const DEFAULT_LABELS = ["ADS", "SOCIAL", "SHOP", "CHAT", "CRM", "SHIP"];
+const DEFAULT_CENTER = "AYRES WEB";
 
 export function AgentMesh({
   labels: labelsProp = DEFAULT_LABELS,

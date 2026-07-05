@@ -3,13 +3,17 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap";
-import { howAuralis } from "@/lib/content";
+import { howAuralis as howEn } from "@/lib/content";
+import { howAuralisId } from "@/lib/content-id";
+import { useLang } from "@/lib/lang";
 import { AgentMesh } from "../visuals/agent-mesh";
 import { ReputationBar } from "../visuals/reputation-bar";
 
 const VISUALS = [AgentMesh, ReputationBar] as const;
 
 export function HowAuralis() {
+  const { lang } = useLang();
+  const howAuralis = lang === "en" ? howEn : howAuralisId;
   const ref = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
 

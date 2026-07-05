@@ -5,11 +5,15 @@ import Link from "next/link";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import { gsap, registerGsap } from "@/lib/gsap";
-import { nav } from "@/lib/content";
+import { nav as navEn } from "@/lib/content";
+import { navId } from "@/lib/content-id";
+import { useLang, LangToggle } from "@/lib/lang";
 import { cn } from "@/lib/cn";
 import { goToRetroMode } from "@/lib/retro-nav";
 
 export function Navbar() {
+  const { lang } = useLang();
+  const nav = lang === "en" ? navEn : navId;
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -118,7 +122,10 @@ export function Navbar() {
         {/* Right — CTA pill. Plain <a>, not next/link — this points at the
             retro site's own root and must escape the /normal-mode basePath
             next/link would otherwise prepend. */}
-        <div className="ml-auto hidden md:block">
+        <div className="ml-auto hidden items-center gap-3 md:flex">
+          <span className="nav-item inline-block">
+            <LangToggle />
+          </span>
           <span className="nav-item inline-block">
             <a
               href={nav.cta.href}
@@ -137,14 +144,17 @@ export function Navbar() {
           </span>
         </div>
 
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          onClick={() => setOpen((v) => !v)}
-          className="ml-auto grid size-9 place-items-center rounded-full border border-border-strong bg-white/[0.04] text-fg md:hidden"
-        >
-          {open ? <X className="size-4" /> : <Menu className="size-4" />}
-        </button>
+        <div className="ml-auto flex items-center gap-2 md:hidden">
+          <LangToggle className="px-3 py-1.5 text-xs" />
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            onClick={() => setOpen((v) => !v)}
+            className="grid size-9 place-items-center rounded-full border border-border-strong bg-white/[0.04] text-fg"
+          >
+            {open ? <X className="size-4" /> : <Menu className="size-4" />}
+          </button>
+        </div>
       </div>
 
       {open && (
