@@ -9,6 +9,7 @@ import { hero as heroEn } from "@/lib/content";
 import { heroId } from "@/lib/content-id";
 import { useLang } from "@/lib/lang";
 import { cn } from "@/lib/cn";
+import { Radar } from "../visuals/radar";
 
 export function Hero() {
   const { lang } = useLang();
@@ -45,6 +46,54 @@ export function Hero() {
           { opacity: 1, scale: 1, duration: 1.4, ease: "expo.out" },
           "-=0.8"
         );
+
+      // Ambient drifting blobs behind the mark — same slow, looping
+      // wander used behind the tech-stack marquee elsewhere on the page.
+      gsap.to(".hero-blob-a", {
+        x: 36,
+        y: -24,
+        duration: 12,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+      gsap.to(".hero-blob-b", {
+        x: -30,
+        y: 28,
+        duration: 15,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+      gsap.to(".hero-blob-c", {
+        x: 22,
+        y: 34,
+        duration: 18,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      // The glow behind the mark breathes slowly...
+      gsap.to(".hero-glow", {
+        scale: 1.12,
+        opacity: 0.85,
+        duration: 5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      // ...and the mark itself floats, so the whole thing reads as alive
+      // rather than a static logo drop.
+      gsap.to(".hero-mark-img", {
+        y: -14,
+        rotate: 0.6,
+        duration: 4.2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
     },
     { scope: ref }
   );
@@ -126,19 +175,51 @@ export function Hero() {
 
         {/* Right — AYRES mark */}
         <div className="hero-field relative mx-auto flex w-full max-w-[420px] origin-center scale-[0.82] items-center justify-center sm:max-w-[480px] sm:scale-100 lg:order-2 lg:mx-0 lg:max-w-none lg:justify-end">
+          {/* Slow-drifting ambient blobs, same treatment as the tech-stack
+              marquee, so the mark isn't sitting in a flat, static field. */}
+          <div aria-hidden className="pointer-events-none absolute inset-0 overflow-visible">
+            <div className="hero-blob-a absolute -top-10 left-[8%] size-[220px] rounded-full bg-violet/20 blur-[90px]" />
+            <div className="hero-blob-b absolute bottom-0 right-[6%] size-[240px] rounded-full bg-indigo/15 blur-[100px]" />
+            <div className="hero-blob-c absolute top-1/3 right-1/3 size-[180px] rounded-full bg-azure/15 blur-[90px]" />
+          </div>
+
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-[3rem]"
+            className="hero-glow pointer-events-none absolute inset-0 rounded-[3rem]"
             style={{
               background:
                 "radial-gradient(60% 50% at 50% 40%, rgba(145,129,245,0.10), transparent 70%)",
             }}
           />
+
+          {/* Radar sweep behind the mark — a slow scanning glow that reacts
+              faintly to the cursor, so the logo reads as a live emblem
+              rather than a flat image drop. */}
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-1/2 aspect-square w-[80%] max-w-[460px] -translate-x-1/2 -translate-y-1/2"
+          >
+            <Radar
+              scale={0.62}
+              ringCount={6}
+              spokeCount={8}
+              ringThickness={0.045}
+              spokeThickness={0.012}
+              sweepSpeed={0.6}
+              sweepWidth={2.0}
+              color="#9f29ff"
+              backgroundColor="#000000"
+              falloff={2.1}
+              brightness={2.3}
+              mouseInfluence={0.06}
+            />
+          </div>
+
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/normal-mode/ayres-mark.png"
+            src="/normal-mode/ayres-logo.png"
             alt="AYRES"
-            className="relative w-full max-w-[380px] drop-shadow-[0_30px_60px_rgba(0,0,0,0.45)]"
+            className="hero-mark-img relative z-10 w-full max-w-[460px] drop-shadow-[0_30px_60px_rgba(0,0,0,0.45)]"
           />
         </div>
       </div>

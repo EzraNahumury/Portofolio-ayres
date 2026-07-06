@@ -3,43 +3,43 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import {
-  Atom,
-  Layers,
-  Braces,
-  Wind,
-  Code2,
-  Palette,
-  FlaskConical,
-  Hexagon,
-  Coffee,
-  Gem,
-  Terminal,
-  GitBranch,
-  Triangle,
-  PenTool,
-} from "lucide-react";
+  ReactIcon,
+  NextjsIcon,
+  JavaScriptIcon,
+  TailwindIcon,
+  Html5Icon,
+  Css3Icon,
+  FlaskIcon,
+  NodejsIcon,
+  JavaIcon,
+  LaravelIcon,
+  PythonIcon,
+  GitHubIcon,
+  VercelIcon,
+  FigmaIcon,
+} from "../visuals/tech-icons";
 import { gsap, registerGsap } from "@/lib/gsap";
 
 type Item = {
   label: string;
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  icon: React.ComponentType<{ className?: string }>;
 };
 
 const ITEMS: Item[] = [
-  { label: "React", icon: Atom },
-  { label: "Next.js", icon: Layers },
-  { label: "JavaScript", icon: Braces },
-  { label: "Tailwind CSS", icon: Wind },
-  { label: "HTML5", icon: Code2 },
-  { label: "CSS3", icon: Palette },
-  { label: "Flask", icon: FlaskConical },
-  { label: "Node.js", icon: Hexagon },
-  { label: "Java", icon: Coffee },
-  { label: "Laravel", icon: Gem },
-  { label: "Python", icon: Terminal },
-  { label: "Git & GitHub", icon: GitBranch },
-  { label: "Vercel", icon: Triangle },
-  { label: "Figma", icon: PenTool },
+  { label: "React", icon: ReactIcon },
+  { label: "Next.js", icon: NextjsIcon },
+  { label: "JavaScript", icon: JavaScriptIcon },
+  { label: "Tailwind CSS", icon: TailwindIcon },
+  { label: "HTML5", icon: Html5Icon },
+  { label: "CSS3", icon: Css3Icon },
+  { label: "Flask", icon: FlaskIcon },
+  { label: "Node.js", icon: NodejsIcon },
+  { label: "Java", icon: JavaIcon },
+  { label: "Laravel", icon: LaravelIcon },
+  { label: "Python", icon: PythonIcon },
+  { label: "Git & GitHub", icon: GitHubIcon },
+  { label: "Vercel", icon: VercelIcon },
+  { label: "Figma", icon: FigmaIcon },
 ];
 
 type Props = {
@@ -210,7 +210,7 @@ function Pill({ label, icon: Icon }: Item) {
         aria-hidden
         className="grid size-9 place-items-center text-fg/90 sm:size-10"
       >
-        <Icon className="size-6 sm:size-7" strokeWidth={1.6} />
+        <Icon className="size-6 sm:size-7" />
       </span>
       <span
         className="text-[20px] font-medium tracking-tight text-fg sm:text-[22px]"
