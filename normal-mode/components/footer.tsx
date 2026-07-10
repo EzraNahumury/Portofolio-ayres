@@ -40,7 +40,7 @@ const FOOT_COPY = {
 const connect = [
   { label: "Instagram", href: "https://instagram.com/ayresapparel" },
   { label: "TikTok", href: "https://tiktok.com/@ayresapparel" },
-  { label: "WhatsApp", href: "https://wa.me/6287818310416" },
+  { label: "WhatsApp", href: "https://wa.me/6282226508883" },
   { label: "Email", href: "mailto:admin@ayresapparel.com" },
 ];
 

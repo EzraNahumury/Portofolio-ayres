@@ -13,7 +13,7 @@ const CARDS = {
     {
       icon: MessageCircle,
       title: "Chat on WhatsApp",
-      body: "0878-1831-0416 — reach us directly for order questions or a quick quote.",
+      body: "0822-2650-8883 — reach us directly for order questions or a quick quote.",
       href: hero.openApp.href,
     },
     {
@@ -33,7 +33,7 @@ const CARDS = {
     {
       icon: MessageCircle,
       title: "Chat via WhatsApp",
-      body: "0878-1831-0416 — hubungi kami langsung untuk pertanyaan order atau penawaran cepat.",
+      body: "0822-2650-8883 — hubungi kami langsung untuk pertanyaan order atau penawaran cepat.",
       href: hero.openApp.href,
     },
     {

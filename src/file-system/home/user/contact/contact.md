@@ -9,7 +9,7 @@
 ### Jl. Wonocatur No.427, Jeruklegi,
 ### Banguntapan, D.I. Yogyakarta 55198
 
-### WhatsApp — 0878-1831-0416
+### WhatsApp — 0822-2650-8883
 ### Order — order@ayresapparel.com
 ### Pengaduan — pengaduan@ayresapparel.com
 

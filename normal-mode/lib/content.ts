@@ -38,7 +38,7 @@ export const hero = {
   ] as const,
   description:
     "AYRES is an Indonesian sportswear brand from Yogyakarta — and every part of how we sell runs on web apps we built ourselves: AI marketing agents, an online shop, a 24/7 chatbot and a production CRM, all working to turn visitors into orders.",
-  openApp: { label: "Chat on WhatsApp", href: "https://wa.me/6287818310416" },
+  openApp: { label: "Chat on WhatsApp", href: "https://wa.me/6282226508883" },
 };
 
 export const whatYouCanDo = {
@@ -369,7 +369,7 @@ export const faq = {
   hint: "Answers about how AYRES uses technology to drive sales and productivity.",
   community: {
     label: "Still Have Questions?\nChat With Us.",
-    href: "https://wa.me/6287818310416",
+    href: "https://wa.me/6282226508883",
   },
   items: [
     {

@@ -45,7 +45,7 @@ const prefersReducedMotion =
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const WA = "https://wa.me/6287818310416";
+const WA = "https://wa.me/6282226508883";
 
 const lang = () => getLang();
 const pick = (s: LStr): string => (lang() === "en" ? s.en : s.id);

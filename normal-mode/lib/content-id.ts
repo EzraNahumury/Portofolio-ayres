@@ -24,7 +24,7 @@ export const heroId = {
   ] as const,
   description:
     "AYRES adalah brand sportswear Indonesia dari Yogyakarta — dan seluruh cara kami berjualan berjalan di atas aplikasi web buatan sendiri: AI marketing agent, toko online, chatbot 24/7, dan CRM produksi, semuanya bekerja mengubah pengunjung jadi order.",
-  openApp: { label: "Chat via WhatsApp", href: "https://wa.me/6287818310416" },
+  openApp: { label: "Chat via WhatsApp", href: "https://wa.me/6282226508883" },
 };
 
 export const howAuralisId = {
@@ -78,7 +78,7 @@ export const faqId = {
   hint: "Jawaban tentang bagaimana AYRES memakai teknologi untuk mendorong penjualan dan produktivitas.",
   community: {
     label: "Masih Ada Pertanyaan?\nNgobrol Dengan Kami.",
-    href: "https://wa.me/6287818310416",
+    href: "https://wa.me/6282226508883",
   },
   items: [
     {
